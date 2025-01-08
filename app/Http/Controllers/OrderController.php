@@ -35,7 +35,7 @@ class OrderController extends Controller
                 "grand_total" => "required",
 
             ]);
-           $order =  Orders::create([
+            $order =  Orders::create([
                 "user_id" => $user->id,
                 "customer_id" => $validatedData['customer_id'],
                 "customer_name" => $validatedData['customer_name'],
@@ -45,8 +45,9 @@ class OrderController extends Controller
                 "grand_total" => $validatedData['grand_total'],
             ]);
 
+            $order->order_item_details = json_decode($order->order_item_details);
 
-            return response()->json(['success' => true, 'message' => 'Order add successfully' , 'data' => $order], 200);
+            return response()->json(['success' => true, 'message' => 'Order add successfully', 'data' => $order], 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e);
         }
@@ -74,7 +75,7 @@ class OrderController extends Controller
             $productsQuery->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year);
         }
 
-            $totalSales = $query->sum('grand_total');
+        $totalSales = $query->sum('grand_total');
         $totalOrders = $query->count();
         $totalProducts = $productsQuery->count();
 
@@ -91,8 +92,6 @@ class OrderController extends Controller
             'message' => 'Report fetched successfully',
             'data' => $data
         ], 200);
-
-
     }
 
 
