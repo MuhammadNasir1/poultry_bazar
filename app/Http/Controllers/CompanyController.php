@@ -34,13 +34,15 @@ class CompanyController extends Controller
                 'company_address' => $validatedData['company_address'],
                 'company_phone' => $validatedData['company_phone'],
                 'company_logo' => $imageFullPath,
-             ]);
+                'company_whatsapp_no' => $request['company_whatsapp_no'],
+                'company_terms_conditions' => $request['company_terms_conditions'],
+            ]);
             return response()->json(['success' => true, 'message' => 'Company Add Successfully'], 200);
 
             $user->company_id = $company->company_id;
             $user->save();
 
-            return response()->json(['success' => true, 'message' => 'Company Add Successfully' , 'company' => $company], 200);
+            return response()->json(['success' => true, 'message' => 'Company Add Successfully', 'company' => $company], 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e);
         }
@@ -64,7 +66,7 @@ class CompanyController extends Controller
             $company->company_address = $request['company_address'] ?? $company->company_address;
             $company->company_phone = $request['company_phone'] ?? $company->company_phone;
             $company->company_logo = $imageFullPath ?? $company->company_logo;
-            return response()->json(['success' => true, 'message' => 'Company update successfully' , 'company' => $company], 200);
+            return response()->json(['success' => true, 'message' => 'Company update successfully', 'company' => $company], 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e);
         }
@@ -75,7 +77,6 @@ class CompanyController extends Controller
         $companies = Company::whereNot('company_status', 0)->get();
         foreach ($companies as  $company) {
             $company->company_owner = User::where('id', $company->user_id)->value('name');
-
         }
         return view('pos.shops', compact('companies'));
     }

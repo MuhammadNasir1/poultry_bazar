@@ -58,16 +58,28 @@ class EcomProductsController extends Controller
                 'ecom_product_media' => $mediaLinksJson,
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Product add successfully' , 'data' => $eCommerceData ] , 200);
+            return response()->json(['success' => true, 'message' => 'Product add successfully', 'data' => $eCommerceData], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false,  'message'  => $e->getMessage()], 500);
         }
     }
 
-    public function getEcomProduct(){
-        $products =  EcomProducts::where('ecom_product_status' , 1)->get();
+    public function getEcomProduct()
+    {
+        $products = EcomProducts::where('ecom_product_status', 1)->get();
+        $categories = [];
 
+        foreach ($products as $product) {
+            $product->ecom_product_media = json_decode($product->ecom_product_media);
+            if (!in_array($product->ecom_product_category, $categories)) {
+                $categories[] = $product->ecom_product_category;
+            }
+        }
+
+        $response = [
+            'products' => $products,
+            'categories' => $categories,
+        ];
+        return response()->json(['success' => true, 'message' => 'Data get successfully', 'data' => $response], 200);
     }
-
-
 }

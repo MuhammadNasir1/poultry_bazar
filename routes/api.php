@@ -94,6 +94,9 @@ Route::post('/register', [ApiController::class, 'register']);
 Route::post('/login', [ApiController::class, 'login']);
 Route::get('/getFAQs', [ApiController::class, 'getFAQs']);
 
+// get ecommerce products
+Route::get('/getEcomProduct', [EcomProductsController::class, 'getEcomProduct']);
+
 
 
 
