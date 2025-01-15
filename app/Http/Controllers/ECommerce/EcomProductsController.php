@@ -71,8 +71,10 @@ class EcomProductsController extends Controller
 
         foreach ($products as $product) {
             $product->ecom_product_media = json_decode($product->ecom_product_media);
-            if (!in_array($product->ecom_product_category, $categories)) {
-                $categories[] = $product->ecom_product_category;
+            if (!in_array($product->ecom_product_category, array_column($categories, 'category_name'))) {
+                $categories[] = [
+                    'category_name' => $product->ecom_product_category
+                ];
             }
         }
 
