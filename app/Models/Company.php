@@ -20,6 +20,8 @@ class Company extends Model
         'company_phone',
         'company_logo',
         'company_status',
+        'company_whatsapp_no',
+        'company_terms_conditions',
     ];
 
     public $timestamps = true;

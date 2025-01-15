@@ -3,6 +3,7 @@
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ECommerce\EcomProductsController;
 use App\Http\Controllers\Flock\FlockController;
 use App\Http\Controllers\Flock\FlockUserController;
 use App\Http\Controllers\Flock\SitesController;
@@ -79,6 +80,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/getWorkers', 'getUserWorkers');
         Route::post('/deleteWorkers', 'deleteUser');
     });
+
+    // E-commerce Api
+    Route::post('/addEcomProduct' , [EcomProductsController::class , 'insert']);
+
 
 });
 Route::get('/getMarkets', [ApiController::class, 'getMarkets']);
