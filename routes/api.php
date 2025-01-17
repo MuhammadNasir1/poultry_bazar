@@ -7,7 +7,7 @@ use App\Http\Controllers\ECommerce\EcomProductsController;
 use App\Http\Controllers\Flock\FlockController;
 use App\Http\Controllers\Flock\FlockUserController;
 use App\Http\Controllers\Flock\SitesController;
-use App\Http\Controllers\Flock\UserController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
@@ -96,6 +96,10 @@ Route::get('/getFAQs', [ApiController::class, 'getFAQs']);
 
 // get ecommerce products
 Route::get('/getEcomProduct', [EcomProductsController::class, 'getEcomProduct']);
+
+
+Route::post('/sendOtpMail', [UserController::class, 'sendOtpMail']);
+Route::post('/resetPassword', [UserController::class, 'resetAppPassword']);
 
 
 

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Mail\ForgotPasswordMail;
+use App\Mail\otpMail;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 
@@ -241,7 +242,7 @@ class UserController extends Controller
         } else {
             $user = User::where('id', '<>', $loggedInUser['id'])->where('user_role', 'operator')->get();
 
-            return view('operators', ['users' => $user]);
+            return view('operators', ['users' => $xuser]);
         }
     }
     // get user
@@ -389,12 +390,74 @@ class UserController extends Controller
         return view('admins', compact('users'));
     }
 
-    // get pos user 
+    // get pos user
 
     public function posUsers()
     {
 
         $users = User::where('module_id', 'like', '%' . 3 . '%')->get();
         return view("pos.users", ['users' => $users]);
+    }
+
+
+    // send forgot mail with otp
+
+    public function sendOtpMail(Request $request)
+    {
+
+        try {
+            $validatedData = $request->validate([
+                'email' => 'required|email|exists:users,email',
+            ]);
+            $otp = rand(100000, 999999);
+            $user = User::where('email', $validatedData['email'])->first();
+
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User not found'], 404);
+            }
+
+            $encryptedUserId = Crypt::encryptString($user->id);
+
+            Mail::to($validatedData['email'])->send(new otpMail($user->email, $otp, $user->id));
+
+
+            return response()->json(['success' => true, 'message' => "OTP mail sent", 'otp' => $otp, 'key' => $encryptedUserId], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function resetAppPassword(Request $request)
+    {
+        try {
+
+            $validatedData = $request->validate([
+                'password' => 'required|min:8', // Added minimum password length
+                'key' => 'required',
+            ]);
+
+            try {
+                // Decrypt the key to get the user ID
+                $user_id = Crypt::decryptString($validatedData['key']);
+            } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+                return response()->json(['success' => false, 'message' => 'Invalid key provided'], 400);
+            }
+
+            // Fetch user by ID
+            $user = User::find($user_id);
+
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User not found'], 404);
+            }
+
+            // Update user's password
+            $user->password = Hash::make($validatedData['password']);
+            $user->save();
+
+            return response()->json(['success' => true, 'message' => 'Password updated successfully'], 200);
+            return response()->json(['success' => true, 'message' => "Password Reset"], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }
