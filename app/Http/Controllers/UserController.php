@@ -242,7 +242,7 @@ class UserController extends Controller
         } else {
             $user = User::where('id', '<>', $loggedInUser['id'])->where('user_role', 'operator')->get();
 
-            return view('operators', ['users' => $xuser]);
+            return view('operators', ['users' => $user]);
         }
     }
     // get user

@@ -89,7 +89,15 @@ class MarketController extends Controller
     public function getMarketUpdates()
     {
         $marketsUpdates = Market::with('marketHistory')->where('market_status', 1)->get();
-        return view('marketupdates', ['marketUpdates' => $marketsUpdates]);
+        $markets = [];
+
+        foreach($marketsUpdates as $market){
+            $markets[] = [
+                'market_name' => $market->market_name,
+                'market_id' => $market->market_id,
+            ];
+        }
+        return view('marketupdates', ['marketUpdates' => $marketsUpdates , 'markets' => $markets]);
     }
     // get market updates
 

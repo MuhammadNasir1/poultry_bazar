@@ -340,9 +340,12 @@ class ApiController extends Controller
                         break;
                 }
             }
-
             $marketHistory = $query->get();
 
+            foreach ($marketHistory as $history) {
+                $market_name = Market::where('market_id', $history->market_id)->value('market_name');
+                $history->market_name = $market_name;
+            }
             return response()->json(['success' => true, 'data' => $marketHistory], 200);
         } catch (\Throwable $e) {
             $this->errorResponse($e);

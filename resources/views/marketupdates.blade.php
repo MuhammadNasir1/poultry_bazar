@@ -11,6 +11,38 @@
     <div class="w-full pt-10 min-h-[88vh] gradient-border  rounded-lg">
         <div class="flex justify-between px-5">
             <h1 class="text-3xl font-bold ">Markets Rates</h1>
+
+            <form id="marketHistoryForm" url="../api/getMarketHistory" method="POST">
+                <div class="flex gap-5 items-end mb-3">
+                    <div class="w-full min-w-20">
+                        <x-select name="marketId" id="market" label="Market">
+                            <x-slot name="options">
+                                <option disabled selected>Select Market</option>
+                                @foreach ($markets as $data)
+                                    <option value="{{ $data['market_id'] }}">{{ $data['market_name'] }}</option>
+                                @endforeach
+
+                            </x-slot>
+                        </x-select>
+                    </div>
+                    <div class="w-full min-w-20">
+                        <x-select name="filterBy" id="filterBy" label="Filter By">
+                            <x-slot name="options">
+                                <option disabled selected>Select Filter</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </x-slot>
+                        </x-select>
+                    </div>
+                    <div class=" w-full">
+                        <button
+                            class="px-3 py-3 whitespace-nowrap   font-semibold text-white rounded-lg shadow-md gradient-bg">Filter
+                            Data</button>
+                    </div>
+                </div>
+            </form>
+
             @if ($userRole === 'superadmin' || isset($privileges['MarketsUpdates']['add']))
                 {{-- <div class="flex gap-5">
                     <button
@@ -37,10 +69,10 @@
                             <input class="w-20 h-10 text-black rounded-md border-1" type="text" name="market_rate"
                                 placeholder="00.0" value="{{ $market->market_rate ?? 0 }}" pattern="^\d+(\.\d+)?$">
                         </td>
-                            <input class="w-20 h-10 text-black rounded-md border-1" type="hidden" name="market_openrate"
-                                placeholder="00.0" value="{{ $market->market_openrate ?? 0 }}" pattern="^\d+(\.\d+)?$">
-                            <input class="w-20 h-10 text-black rounded-md border-1" type="hidden" name="market_closerate"
-                                placeholder="00.0" value="{{ $market->market_closerate ?? 0 }}" pattern="^\d+(\.\d+)?$">
+                        <input class="w-20 h-10 text-black rounded-md border-1" type="hidden" name="market_openrate"
+                            placeholder="00.0" value="{{ $market->market_openrate ?? 0 }}" pattern="^\d+(\.\d+)?$">
+                        <input class="w-20 h-10 text-black rounded-md border-1" type="hidden" name="market_closerate"
+                            placeholder="00.0" value="{{ $market->market_closerate ?? 0 }}" pattern="^\d+(\.\d+)?$">
                         <td>
                             <input class="w-20 h-10 text-black rounded-md border-1" type="text" name="market_doc"
                                 placeholder="00.0" value="{{ $market->market_doc ?? 0 }}" pattern="^\d+(\.\d+)?$">
@@ -80,6 +112,61 @@
 
 @section('js')
     <script>
+        $(document).ready(function() {
+            $("#marketHistoryForm").submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr("url"),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        console.log(response);
+
+                        if (response.success && response.data.length > 0) {
+                            const tableBody = $('#datatable tbody'); // Select the table body
+
+                            // Clear existing rows
+                            tableBody.empty();
+
+                            // Loop through the new data and add rows
+                            response.data.forEach(item => {
+                                const newRow = `
+                <tr>
+                    <td>${item.market_history_id}</td>
+                    <td>${item.market_name}</td>
+                    <td>
+                        <input type="hidden" name="market_id" value="${item.market_id}">
+                        <input class="w-20 h-10 text-black rounded-md border-1" type="text" name="market_rate"
+                            placeholder="00.0" value="${item.market_rate ?? 0}" pattern="^\d+(\.\d+)?$">
+                    </td>
+                    <input class="w-20 h-10 text-black rounded-md border-1" type="hidden" name="market_openrate"
+                        placeholder="00.0" value="${item.market_openrate ?? 0}" pattern="^\d+(\.\d+)?$">
+                    <input class="w-20 h-10 text-black rounded-md border-1" type="hidden" name="market_closerate"
+                        placeholder="00.0" value="${item.market_closerate ?? 0}" pattern="^\d+(\.\d+)?$">
+                    <td>
+                        <input class="w-20 h-10 text-black rounded-md border-1" type="text" name="market_doc"
+                            placeholder="00.0" value="${item.market_doc ?? 0}" pattern="^\d+(\.\d+)?$">
+                    </td>
+                    <td>
+                        <span class="flex gap-4">
+                           
+                        </span>
+                    </td>
+                </tr>
+            `;
+                                tableBody.append(newRow); // Append the new row
+                            });
+                        }
+                    }
+
+                });
+            });
+
+        })
+
         function clearInputs(button) {
             const row = button.closest('tr');
             row.querySelectorAll('input[type="text"]').forEach(input => {

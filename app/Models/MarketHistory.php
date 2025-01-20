@@ -27,5 +27,4 @@ class MarketHistory extends Model
     {
         return $this->belongsTo(Market::class, 'market_id', 'market_id');
     }
-
 }
