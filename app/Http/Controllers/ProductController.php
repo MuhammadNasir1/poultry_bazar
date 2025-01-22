@@ -39,11 +39,16 @@ class ProductController extends Controller
     public function getVariations($product_id = null)
     {
         try {
+            $user = Auth::user();
+
             if ($product_id) {
 
                 $variations = ProductVariations::where('product_id', $product_id)->where('variation_status', 1)->get();
             } else {
-                $variations = ProductVariations::where('variation_status', 1)->get();
+                $products = Products::where('product_status', 1)->where('user_id', $user->id)->get();
+                $productIds = $products->pluck('id');
+                $variations = ProductVariations::where('variation_status', 1)->whereIn('product_id', $productIds)->get();
+
             }
 
             foreach ($variations as $variation) {
@@ -147,7 +152,7 @@ class ProductController extends Controller
                 return response()->json(['success' => false, 'message' => 'product not found'], 422);
             }
             if ($product) {
-                ProductVariations::where('product_id', $product->id)->update(['variation_status' => 0]);
+                ProductVariations::where('product_id', $product->product_id)->update(['variation_status' => 0]);
             }
 
             $product->product_status  = 0;
