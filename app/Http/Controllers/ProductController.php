@@ -42,11 +42,10 @@ class ProductController extends Controller
             $user = Auth::user();
 
             if ($product_id) {
-
                 $variations = ProductVariations::where('product_id', $product_id)->where('variation_status', 1)->get();
             } else {
                 $products = Products::where('product_status', 1)->where('user_id', $user->id)->get();
-                $productIds = $products->pluck('id');
+                $productIds = $products->pluck('product_id');
                 $variations = ProductVariations::where('variation_status', 1)->whereIn('product_id', $productIds)->get();
 
             }
