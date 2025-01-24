@@ -95,7 +95,6 @@ class ProductController extends Controller
             ]);
 
 
-
             return response()->json(['success' => true, 'message' => 'Product Add Successfully'], 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e);

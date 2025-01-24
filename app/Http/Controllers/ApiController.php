@@ -322,6 +322,8 @@ class ApiController extends Controller
             $validatedData = $request->validate([
                 'marketId' => 'required|integer',
                 'filterBy' => 'nullable|string|in:daily,weekly,monthly',
+                'from_date' => 'nullable|date',
+                'to_date' => 'nullable|date'
             ]);
 
             $query = MarketHistory::where('market_id', $validatedData['marketId']);
@@ -340,14 +342,21 @@ class ApiController extends Controller
                         break;
                 }
             }
+
+            if (!empty($validatedData['from_date']) && !empty($validatedData['to_date'])) {
+                $query->whereBetween('created_at', [$validatedData['from_date'], $validatedData['to_date']]);
+            }
+
             $marketHistory = $query->get();
 
             foreach ($marketHistory as $history) {
                 $market_name = Market::where('market_id', $history->market_id)->value('market_name');
                 $history->market_name = $market_name;
             }
+
             return response()->json(['success' => true, 'data' => $marketHistory], 200);
-        } catch (\Throwable $e) {
+
+        } catch (\Exception $e) {
             $this->errorResponse($e);
         }
     }
