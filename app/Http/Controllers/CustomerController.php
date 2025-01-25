@@ -10,7 +10,8 @@ class CustomerController extends Controller
 {
     public function getCustomers()
     {
-        $Customers = Customers::where('customer_status', 1)->get();
+        $user = Auth::user();
+        $Customers = Customers::where('user_id' , $user->id)->where('customer_status', 1)->get();
         return response(['success' => true, 'message' => 'Customers get successfully', "Customers" => $Customers], 200);
     }
 
