@@ -60,16 +60,15 @@ class CompanyController extends Controller
                 $image = $request->file('company_logo');
                 $imagePath = $image->store('company_logos', 'public');
                 $imageFullPath = 'storage/' . $imagePath;
-            }else{
-                $imageFullPath = $company->company_logo;
             }
 
-            $company->company_name = $request['company_name'];
-            $company->company_address = $request['company_address'];
-            $company->company_phone = $request['company_phone'];
-            $company->company_logo = $imageFullPath;
-            $company->company_whatsapp_no = $request['company_whatsapp_no'];
-            $company->company_terms_conditions = $request['company_terms_conditions'];
+            $company->company_name = $request['company_name'] ?? $company->company_name;
+            $company->company_address = $request['company_address'] ?? $company->company_address;
+            $company->company_phone = $request['company_phone'] ?? $company->company_phone;
+            $company->company_logo = $imageFullPath ?? $company->company_logo;
+            $company->company_whatsapp_no = $request['company_whatsapp_no'] ?? $company->company_whatsapp_no;
+            $company->company_terms_conditions = $request['company_terms_conditions'] ?? $company->company_terms_conditions;
+            $company->update();
             return response()->json(['success' => true, 'message' => 'Company update successfully', 'company' => $company], 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e);
