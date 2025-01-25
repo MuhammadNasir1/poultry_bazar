@@ -37,10 +37,8 @@ class CompanyController extends Controller
                 'company_whatsapp_no' => $request['company_whatsapp_no'],
                 'company_terms_conditions' => $request['company_terms_conditions'],
             ]);
-            return response()->json(['success' => true, 'message' => 'Company Add Successfully'], 200);
-
             $user->company_id = $company->company_id;
-            $user->save();
+            $user->update();
 
             return response()->json(['success' => true, 'message' => 'Company Add Successfully', 'company' => $company], 200);
         } catch (\Exception $e) {
