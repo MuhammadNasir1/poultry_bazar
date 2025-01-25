@@ -28,7 +28,7 @@ class CompanyController extends Controller
             } else {
                 $imageFullPath = null;
             }
-            Company::create([
+            $company = Company::create([
                 'user_id' => $user->id,
                 'company_name' => $validatedData['company_name'],
                 'company_address' => $validatedData['company_address'],
