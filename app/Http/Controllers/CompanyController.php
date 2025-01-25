@@ -60,6 +60,8 @@ class CompanyController extends Controller
                 $image = $request->file('company_logo');
                 $imagePath = $image->store('company_logos', 'public');
                 $imageFullPath = 'storage/' . $imagePath;
+            }else{
+                $imageFullPath = $company->company_logo;
             }
 
             $company->company_name = $request['company_name'];
