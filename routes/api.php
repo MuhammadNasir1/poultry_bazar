@@ -83,6 +83,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // E-commerce Api
     Route::post('/addEcomProduct' , [EcomProductsController::class , 'insert']);
+    Route::post('/deleteEcomProduct/{product_id}' , [EcomProductsController::class , 'deleteProduct']);
+    Route::post('/updateEcomProduct/{product_id}' , [EcomProductsController::class , 'updateProduct']);
 
 
 });
