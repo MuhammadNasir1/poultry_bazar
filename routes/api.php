@@ -56,7 +56,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/addOrder', 'addOrder');
         Route::match(['get', 'post'], '/saleReport', 'saleReport');
         Route::match(['get', 'post'], '/dashboardData', 'dashboardData');
-
     });
 
     Route::controller(CompanyController::class)->group(function () {
@@ -82,11 +81,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // E-commerce Api
-    Route::post('/addEcomProduct' , [EcomProductsController::class , 'insert']);
-    Route::post('/deleteEcomProduct/{product_id}' , [EcomProductsController::class , 'deleteProduct']);
-    Route::post('/updateEcomProduct/{product_id}' , [EcomProductsController::class , 'updateProduct']);
-
-
+    Route::post('/addEcomProduct', [EcomProductsController::class, 'insert']);
+    Route::match(['get', 'post'],  '/deleteEcomProduct/{product_id}', [EcomProductsController::class, 'deleteProduct']);
+    Route::post('/updateEcomProduct/{product_id}', [EcomProductsController::class, 'updateProduct']);
 });
 Route::get('/getMarkets', [ApiController::class, 'getMarkets']);
 Route::post('/getMarketHistory', [ApiController::class, 'getMarketHistory']);
@@ -102,9 +99,3 @@ Route::get('/getEcomProduct', [EcomProductsController::class, 'getEcomProduct'])
 
 Route::post('/sendOtpMail', [UserController::class, 'sendOtpMail']);
 Route::post('/resetPassword', [UserController::class, 'resetAppPassword']);
-
-
-
-
-
-

@@ -60,7 +60,7 @@ class OrderController extends Controller
         $filter = request('filter');
 
         $query = Orders::select('grand_total', 'created_at')->where('user_id', $user->id);
-        $productsQuery = Products::where('user_id', $user->id);
+        $productsQuery = Products::where('user_id', $user->id)->where('product_status', 1);
 
         if ($filter === 'today') {
             $query->whereDate('created_at', Carbon::today());
