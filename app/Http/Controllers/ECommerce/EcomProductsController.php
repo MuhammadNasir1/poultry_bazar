@@ -4,6 +4,7 @@ namespace App\Http\Controllers\ECommerce;
 
 use App\Http\Controllers\Controller;
 use App\Models\ECommerce\EcomProducts;
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -121,7 +122,6 @@ class EcomProductsController extends Controller
     {
         $products = EcomProducts::where('ecom_product_status', 1)->get();
         $categories = [];
-
         foreach ($products as $product) {
             $product->ecom_product_media = json_decode($product->ecom_product_media);
             if (!in_array($product->ecom_product_category, array_column($categories, 'category_name'))) {
@@ -129,7 +129,11 @@ class EcomProductsController extends Controller
                     'category_name' => $product->ecom_product_category
                 ];
             }
+            $company = Company::where('company_id', $product->company_id)->first();
+            $product->company = $company;
         }
+
+        // return response()->json($company_info);
 
         $response = [
             'products' => $products,
