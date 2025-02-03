@@ -81,7 +81,6 @@ class ProductController extends Controller
             } else {
                 $imageFullPath = $validatedData['product_image'];
             }
-
             $product = Products::create([
                 'user_id' => $user->id,
                 'product_name' => $validatedData['product_name'],
@@ -94,8 +93,14 @@ class ProductController extends Controller
                 'product_image' => $imageFullPath,
             ]);
 
-
-            return response()->json(['success' => true, 'message' => 'Product Add Successfully'], 200);
+            $ProductVariations = ProductVariations::create([
+                'product_id' => $product->product_id,
+                'product_name' => $product->product_name,
+                'variation_name' => $product->product_name,
+                'variation_sale_rate' => $product->product_sale_rate,
+                'variation_image' => $imageFullPath,
+            ]);
+            return response()->json(['success' => true, 'message' => 'Product And Variation Add Successfully'], 201);
         } catch (\Exception $e) {
             return $this->errorResponse($e);
         }

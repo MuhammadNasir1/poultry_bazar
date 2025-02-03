@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Orders;
+use App\Models\PosPurchase;
 use App\Models\Products;
+use App\Models\ProductVariations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
@@ -61,29 +63,42 @@ class OrderController extends Controller
 
         $query = Orders::select('grand_total', 'created_at')->where('user_id', $user->id);
         $productsQuery = Products::where('user_id', $user->id)->where('product_status', 1);
+        $productVariations = ProductVariations::whereIn('product_id', $productsQuery->pluck('product_id'))->where('variation_status', 1);
 
+        
+        $PurchaseStock = PosPurchase::where('user_id', $user->id)->where('purchase_status', 1);
         if ($filter === 'today') {
             $query->whereDate('created_at', Carbon::today());
             $productsQuery->whereDate('created_at', Carbon::today());
+            $productVariations->whereDate('created_at', Carbon::today());
+            $PurchaseStock->whereDate('created_at', Carbon::today());
         } elseif ($filter === 'week') {
             $fromDate = Carbon::now()->startOfWeek()->format('Y-m-d');
             $toDate = Carbon::now()->endOfWeek()->format('Y-m-d');
             $query->whereBetween('created_at', [$fromDate, $toDate]);
             $productsQuery->whereBetween('created_at', [$fromDate, $toDate]);
+            $productVariations->whereBetween('created_at', [$fromDate, $toDate]);
+            $PurchaseStock->whereBetween('created_at', [$fromDate, $toDate]);
         } elseif ($filter === 'month') {
             $query->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year);
             $productsQuery->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year);
+            $productVariations->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year);
+            $PurchaseStock->whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year);
         }
 
         $totalSales = $query->sum('grand_total');
         $totalOrders = $query->count();
         $totalProducts = $productsQuery->count();
+        $productVariations = $productVariations->count();
+        $PurchaseStock = $PurchaseStock->count();
 
         // Build response data
         $data = [
             ['total_products' => $totalProducts],
             ['total_sales' => $totalSales],
             ['total_orders' => $totalOrders],
+            ['product_variations' => $productVariations],
+            ['Purchase_stock' => $PurchaseStock],
         ];
 
 
