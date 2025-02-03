@@ -40,17 +40,20 @@ class ProductController extends Controller
     {
         try {
             $user = Auth::user();
-
+            $variations = [];
+            
             if ($product_id) {
                 $variations = ProductVariations::where('product_id', $product_id)->where('variation_status', 1)->get();
             } else {
                 $products = Products::where('product_status', 1)->where('user_id', $user->id)->get();
                 $productIds = $products->pluck('product_id');
                 $variations = ProductVariations::where('variation_status', 1)->whereIn('product_id', $productIds)->get();
-
             }
-
+            
+            
             foreach ($variations as $variation) {
+                $product = Products::where('product_id', $variation->product_id)->first();
+                $variation->product_unit = $product->product_unit;
                 if (str_contains($variation->variation_image, 'storage/variation_images')) {
                     $variation->variation_image = asset($variation->variation_image);
                 }
