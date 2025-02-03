@@ -100,7 +100,7 @@ class ProductController extends Controller
                 'variation_sale_rate' => $product->product_sale_rate,
                 'variation_image' => $imageFullPath,
             ]);
-            return response()->json(['success' => true, 'message' => 'Product And Variation Add Successfully'], 201);
+            return response()->json(['success' => true, 'message' => 'Product And Variation Add Successfully'], 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e);
         }
