@@ -244,17 +244,17 @@ class ApiController extends Controller
     public function getMedia($type = null)
     {
         if ($type == 'blogs') {
-            $media = Media::with('category:category_id,category_name')->where('media_type', $type)->where('media_status', 1)->get();
+            $media = Media::with(['category:category_id,category_name','user:id,name,user_image'])->where('media_type', $type)->where('media_status', 1)->get();
             foreach($media as $value) {
                 $value->media_description = json_decode($value->media_description);
             }
         } elseif ($type == 'diseases') {
-            $media = Media::with('category:category_id,category_name')->where('media_type', $type)->where('media_status', 1)->get();
+            $media = Media::with(['category:category_id,category_name','user:id,name,user_image'])->where('media_type', $type)->where('media_status', 1)->get();
             foreach($media as $value) {
                 $value->media_description = json_decode($value->media_description);
             }
         } elseif ($type == 'consultancy') {
-            $media = Media::with('category:category_id,category_name')->where('media_type', $type)->where('media_status', 1)->get();
+            $media = Media::with(['category:category_id,category_name','user:id,name,user_image'])->where('media_type', $type)->where('media_status', 1)->get();
             foreach($media as $value) {
                 $value->media_description = json_decode($value->media_description);
             }
