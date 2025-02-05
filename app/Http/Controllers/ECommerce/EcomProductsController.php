@@ -123,7 +123,10 @@ class EcomProductsController extends Controller
         $products = EcomProducts::where('ecom_product_status', 1)->get();
         $categories = [];
         foreach ($products as $product) {
-            $product->ecom_product_media = json_decode($product->ecom_product_media);
+            $product->ecom_product_media = json_decode($product->ecom_product_media , true);
+            if (is_array($product->ecom_product_media)) {
+                $product->ecom_product_media = array_map(fn($media) => asset($media), $product->ecom_product_media);
+            }
             if (!in_array($product->ecom_product_category, array_column($categories, 'category_name'))) {
                 $categories[] = [
                     'category_name' => $product->ecom_product_category
@@ -133,7 +136,7 @@ class EcomProductsController extends Controller
             $product->company = $company;
         }
 
-        // return response()->json($company_info);
+        return response()->json($products);
 
         $response = [
             'products' => $products,
