@@ -31,10 +31,6 @@ class Media extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'added_user_id', 'id');
-    }
 
     public function getMediaImageAttribute($value)
     {
