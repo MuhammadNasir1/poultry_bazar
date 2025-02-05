@@ -276,6 +276,7 @@ class MediaController extends Controller
             $categories = Category::where('category_status', 1)->get();
 
             foreach ($media as $item) {
+                $item->media_description = json_decode($item->media_description);
                 $item->date = Carbon::parse($item->created_at)->format('M d, Y');
                 $category = $categories->firstWhere('category_id', $item->category_id);
                 $item->category_name = $category ? $category->category_name : null;
@@ -316,6 +317,7 @@ class MediaController extends Controller
 
             // Process and format media items
             $media->each(function ($item) use ($categories) {
+                $item->media_description = json_decode($item->media_description);
                 $item->date = Carbon::parse($item->created_at)->format('M d, Y');
                 $category = $categories->firstWhere('category_id', $item->category_id);
                 $item->category_name = $category ? $category->category_name : null;

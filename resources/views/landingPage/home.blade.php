@@ -661,7 +661,7 @@
                                                     {{ \Illuminate\Support\Str::limit($media->media_title, 45, '...') }}
                                                 </h3>
                                                 <p class="text-sm text-gray-600">
-                                                    {{ \Illuminate\Support\Str::limit($media->media_description, 70, '...') }}
+                                                    {!! \Illuminate\Support\Str::limit($media->media_description, 70, '...') !!}
                                                 </p>
                                             </div>
                                         </div>

@@ -66,7 +66,7 @@
                                             class="ml-2">{{ $blog->date }}</span>
                                     </div>
                                     <h3 class="mb-2 text-lg font-semibold text-gray-800">{{  \Illuminate\Support\Str::limit($blog->media_title, 45, '...')}}</h3>
-                                    <p class="text-sm text-gray-600 break-words">{{   Str::limit($blog->media_description, 70, '...') }}</p>
+                                    <p class="text-sm text-gray-600 break-words">{!!   Str::limit($blog->media_description, 70, '...') !!}</p>
                                 </div>
                             </div>
                         @endforeach
@@ -95,7 +95,7 @@
                                             class="ml-2">{{ $diseases->date }}</span>
                                     </div>
                                     <h3 class="mb-2 text-lg font-semibold text-gray-800">{{ \Illuminate\Support\Str::limit($diseases->media_title, 45, '...') }}</h3>
-                                    <p class="text-sm text-gray-600">{{   Str::limit($diseases->media_description, 70, '...') }}</p>
+                                    <p class="text-sm text-gray-600">{!!   Str::limit($diseases->media_description, 70, '...') !!}</p>
                                 </div>
                             </div>
                         @endforeach
@@ -134,7 +134,7 @@
                                             class="ml-2">{{ $consultancy->date }}</span>
                                     </div>
                                     <h3 class="mb-2 text-lg font-semibold text-gray-800">{{  \Illuminate\Support\Str::limit($consultancy->media_title, 45, '...') }}</h3>
-                                    <p class="text-sm text-gray-600">{{  Str::limit($consultancy->media_description, 70, '...') }}</p>
+                                    <p class="text-sm text-gray-600">{!!  Str::limit($consultancy->media_description, 70, '...') !!}</p>
                                 </div>
                             </div>
                         @endforeach
@@ -235,7 +235,7 @@
                     $('#mediaAuthor').text(mediaDetails.attr('mediaAuthor'));
                     $('#categoryName').text(mediaDetails.attr('mediaCategory'));
                     $('#mediaDate').text(mediaDetails.attr('mediaDate'));
-                    $('#mediaDescription').text(mediaDetails.attr('mediaDescription'));
+                    $('#mediaDescription').html(mediaDetails.attr('mediaDescription'));
 
                     // $('#mediaImg').attr('src', mediaDetails.attr('mediaImage'));
 

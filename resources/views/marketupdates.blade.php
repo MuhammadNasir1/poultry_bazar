@@ -35,10 +35,11 @@
                             </x-slot>
                         </x-select>
                     </div>
-                    <div class=" w-full">
+                    <div class=" w-full flex gap-2">
                         <button
                             class="px-3 py-3 whitespace-nowrap   font-semibold text-white rounded-lg shadow-md gradient-bg">Filter
                             Data</button>
+                       <a href="./marketupdates"  class=" py-3 whitespace-nowrap   font-semibold text-white rounded-lg shadow-md bg-green-900 px-5">All</a>
                     </div>
                 </div>
             </form>
