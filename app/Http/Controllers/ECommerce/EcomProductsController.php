@@ -136,7 +136,6 @@ class EcomProductsController extends Controller
             $product->company = $company;
         }
 
-        return response()->json($products);
 
         $response = [
             'products' => $products,
