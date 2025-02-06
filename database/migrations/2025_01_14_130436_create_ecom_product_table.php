@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->string('ecom_product_name');
             $table->string('ecom_product_category');
-            $table->string('ecom_product_brand');
+            $table->string('ecom_product_brand')->nullable();
             $table->integer('ecom_product_price');
             $table->text('ecom_product_description')->nullable();
             $table->longText('ecom_product_media')->nullable();
