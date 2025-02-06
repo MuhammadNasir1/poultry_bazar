@@ -247,21 +247,21 @@ class ApiController extends Controller
             $media = Media::with('category:category_id,category_name')->where('media_type', $type)->where('media_status', 1)->get();
             foreach($media as $value) {
                 $value->user_name = user::where('id', $value->added_user_id)->value('name');
-                $value->user_image =  user::where('id', $value->added_user_id)->value('user_image');
+                $value->user_image = asset(user::where('id', $value->added_user_id)->value('user_image'));
                 $value->media_description = json_decode($value->media_description);
             }
         } elseif ($type == 'diseases') {
             $media = Media::with('category:category_id,category_name')->where('media_type', $type)->where('media_status', 1)->get();
             foreach($media as $value) {
                 $value->user_name = user::where('id', $value->added_user_id)->value('name');
-                $value->user_image =  user::where('id', $value->added_user_id)->value('user_image');
+                $value->user_image =  asset(user::where('id', $value->added_user_id)->value('user_image'));
                 $value->media_description = json_decode($value->media_description);
             }
         } elseif ($type == 'consultancy') {
             $media = Media::with('category:category_id,category_name')->where('media_type', $type)->where('media_status', 1)->get();
             foreach($media as $value) {
                 $value->user_name = user::where('id', $value->added_user_id)->value('name');
-                $value->user_image =  user::where('id', $value->added_user_id)->value('user_image');
+                $value->user_image =  asset(user::where('id', $value->added_user_id)->value('user_image'));
                 $value->media_description = json_decode($value->media_description);
             }
         } else {
