@@ -7,6 +7,7 @@ use App\Models\ECommerce\EcomProducts;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class EcomProductsController extends Controller
 {
@@ -28,21 +29,46 @@ class EcomProductsController extends Controller
             ]);
 
 
+            // $mediaLinks = [];
+
+            // if ($request->has('mediasLinks') && is_array($request->mediasLinks)) {
+            //     foreach ($request->mediasLinks as $file) {
+            //         if ($file instanceof \Illuminate\Http\UploadedFile) {
+            //             $existingFilePath = public_path($file->getClientOriginalName());
+            //             if (!empty($existingFilePath) && file_exists($existingFilePath)) {
+            //                 unlink($existingFilePath); // Delete the file from the file system
+            //             }
+            //             $filePath = $file->store('eCommerceMediaImages', 'public');
+            //             $mediaLinks[] = 'storage/' . $filePath;
+            //         }
+            //     }
+            // }
+
             $mediaLinks = [];
 
             if ($request->has('mediasLinks') && is_array($request->mediasLinks)) {
                 foreach ($request->mediasLinks as $file) {
-                    if ($file instanceof \Illuminate\Http\UploadedFile) {
-                        $existingFilePath = public_path($file->getClientOriginalName());
-                        if (!empty($existingFilePath) && file_exists($existingFilePath)) {
-                            unlink($existingFilePath); // Delete the file from the file system
+                    if (is_string($file)) {
+                        // If it's a string (old file), check if it exists
+                        $filePath = str_replace(url('storage/'), '', $file); // Extract path after 'storage/'
+                        if (Storage::disk('public')->exists($filePath)) {
+                            $mediaLinks[] = $file; // Keep the old file
                         }
+                    } elseif ($file instanceof \Illuminate\Http\UploadedFile) {
+                        // If it's a new file, delete the old file if present in the request
+                        $fileName = $file->getClientOriginalName();
+                        $existingFilePath = 'eCommerceMediaImages/' . $fileName;
+        
+                        if (Storage::disk('public')->exists($existingFilePath)) {
+                            Storage::disk('public')->delete($existingFilePath);
+                        }
+        
+                        // Store new file
                         $filePath = $file->store('eCommerceMediaImages', 'public');
-                        $mediaLinks[] = 'storage/' . $filePath;
+                        $mediaLinks[] = Storage::url($filePath);
                     }
                 }
             }
-
             // Encode the media links array as JSON
             $mediaLinksJson = json_encode($mediaLinks);
 
