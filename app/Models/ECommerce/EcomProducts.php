@@ -17,7 +17,7 @@ class EcomProducts extends Model
         'ecom_product_brand',
         'ecom_product_price',
         'ecom_product_description',
-        'ecom_product_media',
+        'ecom_product_unit',
         'ecom_product_media',
         'ecom_product_status',
     ];

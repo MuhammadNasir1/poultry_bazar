@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('ecom_product_category');
             $table->string('ecom_product_brand')->nullable();
             $table->integer('ecom_product_price');
+            $table->string('ecom_product_unit')->nullable();
             $table->text('ecom_product_description')->nullable();
             $table->longText('ecom_product_media')->nullable();
             $table->integer('ecom_product_status')->default(1);

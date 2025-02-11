@@ -23,6 +23,7 @@ class EcomProductsController extends Controller
                 'ecom_product_category' => 'required',
                 'ecom_product_brand' => 'nullable',
                 'ecom_product_price' => 'required',
+                'ecom_product_unit' => 'nullable',
                 'ecom_product_description' => 'nullable',
                 'mediasLinks' => 'nullable|array',
 
@@ -81,6 +82,7 @@ class EcomProductsController extends Controller
                 'ecom_product_category' => $validatedData['ecom_product_category'],
                 'ecom_product_brand' => $validatedData['ecom_product_brand'],
                 'ecom_product_price' => $validatedData['ecom_product_price'],
+                'ecom_product_unit' => $validatedData['ecom_product_unit'],
                 'ecom_product_description' => $validatedData['ecom_product_description'],
                 'ecom_product_media' => $mediaLinksJson,
             ]);
@@ -107,6 +109,7 @@ class EcomProductsController extends Controller
                 'ecom_product_brand' => 'nullable',
                 'ecom_product_price' => 'required',
                 'ecom_product_description' => 'nullable',
+                'ecom_product_unit' => 'nullable',
                 'mediasLinks' => 'nullable|array',
 
             ]);
@@ -134,6 +137,7 @@ class EcomProductsController extends Controller
             $product->ecom_product_category = $validatedData['ecom_product_category'];
             $product->ecom_product_brand = $validatedData['ecom_product_brand'];
             $product->ecom_product_price = $validatedData['ecom_product_price'];
+            $product->ecom_product_unit = $validatedData['ecom_product_unit'];
             $product->ecom_product_description = $validatedData['ecom_product_description'];
             $product->ecom_product_media = $mediaLinksJson;
             $product->update();
