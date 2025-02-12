@@ -30,43 +30,17 @@ class EcomProductsController extends Controller
             ]);
 
 
-            // $mediaLinks = [];
-
-            // if ($request->has('mediasLinks') && is_array($request->mediasLinks)) {
-            //     foreach ($request->mediasLinks as $file) {
-            //         if ($file instanceof \Illuminate\Http\UploadedFile) {
-            //             $existingFilePath = public_path($file->getClientOriginalName());
-            //             if (!empty($existingFilePath) && file_exists($existingFilePath)) {
-            //                 unlink($existingFilePath); // Delete the file from the file system
-            //             }
-            //             $filePath = $file->store('eCommerceMediaImages', 'public');
-            //             $mediaLinks[] = 'storage/' . $filePath;
-            //         }
-            //     }
-            // }
-
             $mediaLinks = [];
 
             if ($request->has('mediasLinks') && is_array($request->mediasLinks)) {
                 foreach ($request->mediasLinks as $file) {
-                    if (is_string($file)) {
-                        // If it's a string (old file), check if it exists
-                        $filePath = str_replace(url('storage/'), '', $file); // Extract path after 'storage/'
-                        if (Storage::disk('public')->exists($filePath)) {
-                            $mediaLinks[] = $file; // Keep the old file
+                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+                        $existingFilePath = public_path($file->getClientOriginalName());
+                        if (!empty($existingFilePath) && file_exists($existingFilePath)) {
+                            unlink($existingFilePath); // Delete the file from the file system
                         }
-                    } elseif ($file instanceof \Illuminate\Http\UploadedFile) {
-                        // If it's a new file, delete the old file if present in the request
-                        $fileName = $file->getClientOriginalName();
-                        $existingFilePath = 'eCommerceMediaImages/' . $fileName;
-        
-                        if (Storage::disk('public')->exists($existingFilePath)) {
-                            Storage::disk('public')->delete($existingFilePath);
-                        }
-        
-                        // Store new file
                         $filePath = $file->store('eCommerceMediaImages', 'public');
-                        $mediaLinks[] = Storage::url($filePath);
+                        $mediaLinks[] = 'storage/' . $filePath;
                     }
                 }
             }
@@ -113,24 +87,44 @@ class EcomProductsController extends Controller
                 'mediasLinks' => 'nullable|array',
 
             ]);
-
             $mediaLinks = [];
+    
 
             if ($request->has('mediasLinks') && is_array($request->mediasLinks)) {
                 foreach ($request->mediasLinks as $file) {
-                    if ($file instanceof \Illuminate\Http\UploadedFile) {
-                        $existingFilePath = public_path($file->getClientOriginalName());
-                        if (!empty($existingFilePath) && file_exists($existingFilePath)) {
-                            unlink($existingFilePath); // Delete the file from the file system
+                    if (is_string($file)) {
+                        // If it's a string (old file), check if it exists in the storage
+                        $filePath = str_replace('storage/', '', $file);
+                        if (Storage::disk('public')->exists($filePath)) {
+                            // Add the old file path (string) to the mediaLinks array
+                            $mediaLinks[] = $file;
                         }
+                    } elseif ($file instanceof \Illuminate\Http\UploadedFile) {
+                        // If it's a new file, handle the replacement logic
+                        $fileName = $file->getClientOriginalName();
+                        $existingFilePath = 'eCommerceMediaImages/' . $fileName;
+            
+                        // If an existing file with the same name is found, delete it
+                        if (Storage::disk('public')->exists($existingFilePath)) {
+                            Storage::disk('public')->delete($existingFilePath);
+                        }
+            
+                        // Store the new file
                         $filePath = $file->store('eCommerceMediaImages', 'public');
-                        $mediaLinks[] = 'storage/' . $filePath;
+                        $newFileUrl = Storage::url($filePath);
+            
+                        // Add the new file's URL to the mediaLinks array
+                        $mediaLinks[] = $newFileUrl;
                     }
                 }
             }
-
+            
             // Encode the media links array as JSON
             $mediaLinksJson = json_encode($mediaLinks);
+            
+            
+
+
 
             $product->company_id = $validatedData['company_id'];
             $product->ecom_product_name = $validatedData['ecom_product_name'];
@@ -153,7 +147,7 @@ class EcomProductsController extends Controller
         $products = EcomProducts::where('ecom_product_status', 1)->get();
         $categories = [];
         foreach ($products as $product) {
-            $product->ecom_product_media = json_decode($product->ecom_product_media , true);
+            $product->ecom_product_media = json_decode($product->ecom_product_media, true);
             if (is_array($product->ecom_product_media)) {
                 $product->ecom_product_media = array_map(fn($media) => asset($media), $product->ecom_product_media);
             }
