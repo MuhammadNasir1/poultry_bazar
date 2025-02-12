@@ -99,3 +99,5 @@ Route::get('/getEcomProduct', [EcomProductsController::class, 'getEcomProduct'])
 
 Route::post('/sendOtpMail', [UserController::class, 'sendOtpMail']);
 Route::post('/resetPassword', [UserController::class, 'resetAppPassword']);
+
+Route::post('/sendLeads/{company_id}', [CompanyController::class, 'addLeads']);

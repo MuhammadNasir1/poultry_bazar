@@ -22,6 +22,8 @@ class Company extends Model
         'company_status',
         'company_whatsapp_no',
         'company_terms_conditions',
+        'company_views',
+        'company_leads',
     ];
 
     public $timestamps = true;

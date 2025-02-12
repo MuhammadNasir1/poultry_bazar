@@ -81,4 +81,44 @@ class CompanyController extends Controller
         }
         return view('pos.shops', compact('companies'));
     }
+
+    public function addLeads(Request $request, $company_id) {
+        try {
+            // Find the company by ID
+            $company = Company::find($company_id);
+            if (!$company) {
+                return response()->json(['success' => false, 'message' => 'Company not found'], 400);
+            }
+    
+            // Validate the incoming request for 'lead_type'
+            $request->validate([
+                'lead_type' => 'required|string',
+            ]);
+    
+            // Check the type of lead (view or lead)
+            if ($request->lead_type == 'view') {
+                // Increment the company_views count
+                $company->increment('company_views');
+            } elseif ($request->lead_type == 'lead') {
+                // Increment the company_leads count
+                $company->increment('company_leads');
+            } else {
+                // Return an error if lead_type is invalid
+                return response()->json(['success' => false, 'message' => 'Invalid lead type'], 400);
+            }
+    
+            // No need for $company->update(); because increment() automatically handles the update
+    
+            // Return a success response
+            return response()->json(['success' => true, 'message' => "Lead/view count updated successfully"], 200);
+    
+        } catch (\Exception $e) {
+            // Return an error response in case of exception
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+    
+    
+
+    
 }

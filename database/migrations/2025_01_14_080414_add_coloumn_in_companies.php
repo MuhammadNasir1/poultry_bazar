@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::table('companies', function (Blueprint $table) {
             $table->bigInteger('company_whatsapp_no');
             $table->longText('company_terms_conditions');
+            $table->integer('company_views')->nullable()->default(0);
+            $table->integer('company_leads')->nullable()->default(0);
         });
     }
 
