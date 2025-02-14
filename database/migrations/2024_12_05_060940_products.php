@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('product_unit');
             $table->float('product_purchase_rate')->default(0);
             $table->float('product_sale_rate')->default(0);
-            $table->integer('product_stock')->default(0);
+            $table->float('product_stock')->default(0);
             $table->integer('product_status')->default(1);
             $table->timestamps();
         });

@@ -7,6 +7,7 @@ use App\Models\Market;
 use App\Models\MarketHistory;
 use App\Models\Media;
 use App\Models\PosPurchase;
+use App\Models\Products;
 use App\Models\Queries;
 use App\Models\User;
 // use Illuminate\Container\Attributes\Auth;
@@ -29,6 +30,11 @@ class ApiController extends Controller
         try {
             $purchaseId = $request->input('purchase_id');
             $posPurchase = PosPurchase::where('purchase_id', $purchaseId)->first();
+            $product = Products::where('product_id', $posPurchase->product_id)->first();
+            if ($product) {
+                $product->product_stock -= $posPurchase->purchase_weight_quantity; // Deduct stock
+                $product->save();
+            }
             $posPurchase->delete();
 
             return response()->json(['success' => true, 'message' => 'Purchase deleted'], 200);
@@ -68,6 +74,14 @@ class ApiController extends Controller
 
             if ($purchaseId != null) {
                 $recentPurchase = PosPurchase::where('purchase_id', $purchaseId)->first();
+                  // Step 1: Rollback old stock (subtract the previously added stock)
+            $product = Products::where('product_id', $recentPurchase->product_id)->first();
+            if ($product) {
+                $product->product_stock -= $recentPurchase->purchase_weight_quantity;
+                $product->save();
+            }
+
+
                 $recentPurchase->update([
                     'user_id' => $user->id,
                     'product_id' => $validatedData['product_id'],
@@ -78,8 +92,14 @@ class ApiController extends Controller
                     'purchase_amount' => $validatedData['purchase_amount'],
                     'purchase_comments' => $validatedData['purchase_comments'],
                 ]);
+                $products = Products::select('product_id', 'product_stock')->where('product_id', $validatedData['product_id'])->first();
 
-                return response()->json(['success' => true, 'message' => 'Purchase updated'], 200);
+                if ($products) {
+                    $products->product_stock += $validatedData['purchase_weight_quantity']; 
+                    $products->save(); 
+                }
+            return response()->json(['success' => true, 'message' => 'Purchase updated'], 200);
+                
             } else {
                 $posPurchase = PosPurchase::create([
                     'user_id' => $user->id,
@@ -91,6 +111,13 @@ class ApiController extends Controller
                     'purchase_amount' => $validatedData['purchase_amount'],
                     'purchase_comments' => $validatedData['purchase_comments'],
                 ]);
+
+                $products = Products::select('product_id', 'product_stock')->where('product_id', $validatedData['product_id'])->first();
+            
+            if ($products) {
+                $products->product_stock += $validatedData['purchase_weight_quantity']; 
+                $products->save(); 
+            }
                 return response()->json(['success' => true, 'message' => 'Purchase added'], 200);
             }
         } catch (\Exception $e) {

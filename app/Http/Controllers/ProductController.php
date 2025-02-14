@@ -54,6 +54,7 @@ class ProductController extends Controller
             foreach ($variations as $variation) {
                 $product = Products::where('product_id', $variation->product_id)->first();
                 $variation->product_unit = $product->product_unit;
+                $variation->product_stock = $product->product_stock;
                 if (str_contains($variation->variation_image, 'storage/variation_images')) {
                     $variation->variation_image = asset($variation->variation_image);
                 }

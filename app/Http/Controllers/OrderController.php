@@ -47,6 +47,22 @@ class OrderController extends Controller
                 "grand_total" => $validatedData['grand_total'],
             ]);
 
+            foreach ($validatedData['order_item_details'] as $item) {
+                // Find the variation in the variations table
+                $variation = ProductVariations::where('product_variation_id', $item['variation_id'])->first();
+        
+                if ($variation) {
+                    // Get the corresponding product_id
+                    $product = Products::where('product_id', $variation->product_id)->first();
+        
+                    if ($product) {
+                        $product->product_stock -= $item['variation_weight']; // Deduct stock
+                        $product->save();
+                    }
+                }
+            }
+        
+
             $order->order_item_details = json_decode($order->order_item_details);
 
             return response()->json(['success' => true, 'message' => 'Order add successfully', 'data' => $order], 200);
