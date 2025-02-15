@@ -43,6 +43,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/getVariation/{product_id?}', 'getVariations');
         Route::match(['get', 'post'], '/deleteVariation/{variation_id}',  'deleteVariation');
         Route::post('/updateVariation/{variation_id}', 'updateVariation');
+        Route::get('/getProductStock', 'getProductStock');
+
     });
     Route::controller(CustomerController::class)->group(function () {
         Route::get('/getCustomers', 'getCustomers');

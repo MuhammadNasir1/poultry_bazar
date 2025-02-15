@@ -256,4 +256,12 @@ class ProductController extends Controller
             return $this->errorResponse($e);
         }
     }
+    public function getProductStock(){
+
+        $user = Auth::user();
+        $stock = Products::select('product_id'  , 'product_name' ,  'product_unit' , 'product_stock' )->where('user_id' , $user->id)->get();
+
+        return response()->json(['success' => true , 'message'=> "Stock get successfully" , "stock" => $stock ] , 200);
+
+    }
 }
