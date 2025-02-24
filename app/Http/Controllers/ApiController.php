@@ -186,12 +186,13 @@ class ApiController extends Controller
     // get User
 
     // logout
-    public function logout()
-    {
-        Auth::user()->tokens()->delete();
+    public function logout(Request $request)
+{
+    $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['success' => true, 'message' => 'Logged out successfully'], 200);
-    }
+    return response()->json(['success' => true, 'message' => 'Logged out successfully'], 200);
+}
+
     // logout
 
     // login
