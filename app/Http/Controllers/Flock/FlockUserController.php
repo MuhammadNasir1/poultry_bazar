@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Flock;
 
 use App\Http\Controllers\Controller;
+use App\Mail\LoginInfoMail;
 use App\Models\Flock\Flock;
 use App\Models\Flock\FlockDetails;
 use App\Models\User;
 use http\Env\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 class FlockUserController extends Controller
 {
     public function insertUser(Request $request)
@@ -64,7 +66,7 @@ class FlockUserController extends Controller
                 if (!$flock) {
                     return response()->json(['success' => false, 'message' => 'Flock not found'], 400);
                 }
-
+                $password = Str::random(8);
                 $user = User::Create([
                     'added_user_id' => $userId,
                     'name' =>  $validatedData['name'],
@@ -72,7 +74,7 @@ class FlockUserController extends Controller
                     'email' => $validatedData['email'],
                     'user_phone' => $validatedData['phone'],
                     'address' => $validatedData['address'],
-                    'password' => "12345678",
+                    'password' => $password,
                     'user_image' => $imageFullPath,
                 ]);
                 $roleToFieldMap = [
@@ -85,6 +87,11 @@ class FlockUserController extends Controller
                     $flock->{$roleToFieldMap[$validatedData['role']]} = $user->id;
                 }
                 $flock->save();
+                Mail::to($validatedData['email'])->send(new LoginInfoMail(
+                    $validatedData['name'],
+                    $validatedData['email'],
+                    $password 
+                ));
                 return response()->json(['success' => true, 'message' => 'Worker add successfully'], 200);
             }
         } catch (\Exception $e) {
