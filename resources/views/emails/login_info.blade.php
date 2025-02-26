@@ -69,7 +69,7 @@
             Here are your login details for accessing your account:
             <div class="credentials">
                 Email: <strong>{{$email}}</strong><br>
-                Password: <strong>{$password}</strong>
+                Password: <strong>{{$password}}</strong>
             </div>
             Please use the button below to log in to your account:
             <br>
