@@ -54,8 +54,9 @@ class SitesController extends Controller
             // Get the field name corresponding to the user's role
             $field = $roleToFieldMap[$user_role];
             $flocks = Flock::select('flock_id', 'flock_site_id')->where($field, $userId)->get();
+            $sites = [];
             foreach ($flocks as $flock) {
-                $sites = Sites::where('site_id', $flock->flock_site_id)->get();
+                $sites[] = Sites::where('site_id', $flock->flock_site_id)->get();
             }
         } else {
 
