@@ -43,25 +43,29 @@ class SitesController extends Controller
         $user = Auth::user();
         $userId = $user->id;
         $user_role = $user->user_role;
-
+        
         $roleToFieldMap = [
             'fl_supervisor' => 'flock_supervisor_user_id',
             'fl_accountant' => 'flock_accountant_user_id',
             'fl_assistant' => 'flock_assistant_user_id',
         ];
+        
         // Check if the user role exists in the role map
         if (array_key_exists($user_role, $roleToFieldMap)) {
             // Get the field name corresponding to the user's role
             $field = $roleToFieldMap[$user_role];
             $flocks = Flock::select('flock_id', 'flock_site_id')->where($field, $userId)->get();
             $sites = [];
+        
+            // Collect sites for each flock
             foreach ($flocks as $flock) {
-                $sites[] = Sites::where('site_id', $flock->flock_site_id)->get();
+                $flockSites = Sites::where('site_id', $flock->flock_site_id)->get();
+                $sites = $sites->merge($flockSites); // Merge the sites collections
             }
         } else {
-
-            $sites = Sites::Where('user_id', $userId)->get();
+            $sites = Sites::where('user_id', $userId)->get();
         }
+        
 
 
         return response()->json(['success' => true, 'sites' => $sites], 200);
