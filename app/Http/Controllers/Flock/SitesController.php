@@ -50,12 +50,14 @@ class SitesController extends Controller
             'fl_assistant' => 'flock_assistant_user_id',
         ];
         
+        // Initialize $sites as a collection
+        $sites = collect();
+        
         // Check if the user role exists in the role map
         if (array_key_exists($user_role, $roleToFieldMap)) {
             // Get the field name corresponding to the user's role
             $field = $roleToFieldMap[$user_role];
             $flocks = Flock::select('flock_id', 'flock_site_id')->where($field, $userId)->get();
-            $sites = [];
         
             // Collect sites for each flock
             foreach ($flocks as $flock) {
@@ -65,7 +67,6 @@ class SitesController extends Controller
         } else {
             $sites = Sites::where('user_id', $userId)->get();
         }
-        
 
 
         return response()->json(['success' => true, 'sites' => $sites], 200);
