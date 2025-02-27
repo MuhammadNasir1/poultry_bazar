@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PosPurchase;
 use App\Models\Products;
 use App\Models\ProductVariations;
 use Illuminate\Http\Request;
@@ -17,6 +18,13 @@ class ProductController extends Controller
             $products = Products::where('product_status', 1)->where('user_id', $user->id)->get();
 
             foreach ($products as $product) {
+
+         // get total stock of product
+         $recentPurchases = PosPurchase::where('product_id', $product->product_id)->get();
+         $totalStock = $recentPurchases->sum('purchase_weight_quantity');
+         
+         $product->total_stock = $totalStock;
+
                 if (str_contains($product->product_image, 'storage/product_images')) {
                     $product->product_image = asset($product->product_image);
                 }
@@ -30,8 +38,11 @@ class ProductController extends Controller
                 } else {
                     $product->variation = [];
                 }
+
+       
+                
             }
-            return response()->json(['success' => true, 'message' => ' Product Get Successfully', 'products' => $products], 200);
+            return response()->json(['success' => true, 'message' => 'Product Get Successfully', 'products' => $products], 200);
         } catch (\Exception $e) {
             return $this->errorResponse($e);
         }

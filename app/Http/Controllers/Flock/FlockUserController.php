@@ -76,6 +76,7 @@ class FlockUserController extends Controller
                     'address' => $validatedData['address'],
                     'password' => $password,
                     'user_image' => $imageFullPath,
+                    'module_id' => "2,5",
                 ]);
                 $roleToFieldMap = [
                     'fl_supervisor' => 'flock_supervisor_user_id',
