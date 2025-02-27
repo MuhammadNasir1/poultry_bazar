@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Flock;
 
 use App\Http\Controllers\Controller;
+use App\Models\Flock\Flock;
 use App\Models\Flock\Sites;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -37,9 +38,31 @@ class SitesController extends Controller
         }
     }
 
-    public function getSites(){
-    $userId = Auth::user()->id;
-    $sites = Sites::Where('user_id' , $userId)->get();
-    return response()->json(['success' => true, 'sites' => $sites] , 200);
+    public function getSites()
+    {
+        $user = Auth::user();
+        $userId = $user->id;
+        $user_role = $user->user_role;
+
+        $roleToFieldMap = [
+            'fl_supervisor' => 'flock_supervisor_user_id',
+            'fl_accountant' => 'flock_accountant_user_id',
+            'fl_assistant' => 'flock_assistant_user_id',
+        ];
+        // Check if the user role exists in the role map
+        if (array_key_exists($user_role, $roleToFieldMap)) {
+            // Get the field name corresponding to the user's role
+            $field = $roleToFieldMap[$user_role];
+            $flocks = Flock::select('flock_id', 'flock_site_id')->where($field, $userId)->get();
+            foreach ($flocks as $flock) {
+                $sites = Sites::where('site_id', $flock->flock_site_id)->get();
+            }
+        } else {
+
+            $sites = Sites::Where('user_id', $userId)->get();
+        }
+
+
+        return response()->json(['success' => true, 'sites' => $sites], 200);
     }
 }

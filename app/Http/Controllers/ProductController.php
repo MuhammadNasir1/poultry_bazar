@@ -20,7 +20,7 @@ class ProductController extends Controller
             foreach ($products as $product) {
 
          // get total stock of product
-         $recentPurchases = PosPurchase::where('product_id', $product->product_id)->get();
+         $recentPurchases = PosPurchase::select('purchase_weight_quantity')->where('product_id', $product->product_id)->get();
          $totalStock = $recentPurchases->sum('purchase_weight_quantity');
          
          $product->total_stock = $totalStock;
