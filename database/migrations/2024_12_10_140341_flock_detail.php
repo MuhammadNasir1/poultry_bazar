@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('flock_details', function(Blueprint $table) {
             $table->id('fd__id');
             $table->integer('flock_id');
-            $table->longText('fd_bedding')->nullable;
+            $table->longText('fd_bedding')->nullable();
             $table->longText('fd_brooder_fuel')->nullable();
             $table->longText('fd_doc')->nullable();
             $table->longText('fd_electricity')->nullable();
