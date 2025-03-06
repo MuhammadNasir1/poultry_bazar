@@ -18,43 +18,121 @@ class FlockUserController extends Controller
     {
 
         try {
+            // if ($request->input('worker_id')) {
+            //     $validatedData = $request->validate([
+            //         'worker_id' => 'required',
+            //         'flock_id' => 'required|integer|exists:flocks,flock_id',
+            //         'role' => 'required|in:fl_supervisor,fl_accountant,fl_assistant',
+            //     ]);
+
+            //     $flock = Flock::find($validatedData['flock_id']);
+            //     if (!$flock) {
+            //         return response()->json(['success' => false, 'message' => 'Flock not found'], 400);
+            //     }
+
+            //     $roleToFieldMap = [
+            //         'fl_supervisor' => 'flock_supervisor_user_id',
+            //         'fl_accountant' => 'flock_accountant_user_id',
+            //         'fl_assistant' => 'flock_assistant_user_id',
+            //     ];
+
+            //     if (isset($roleToFieldMap[$validatedData['role']])) {
+            //         $flock->{$roleToFieldMap[$validatedData['role']]} = $validatedData['worker_id'];
+            //     }
+
+            //     $flock->save();
+
+            //     return response()->json(['success' => true, 'message' => 'Flock updated successfully']);
+            // } else {
+
+            //     $userId = Auth::user()->id;
+            //     $validatedData = $request->validate([
+            //         'flock_id' => 'required|integer|exists:flocks,flock_id',
+            //         'role' => 'required|in:fl_supervisor,fl_accountant,fl_assistant',
+            //         'name' => 'required',
+            //         'email' => 'required|unique:users,email',
+            //         'phone' => 'nullable',
+            //         'address' => 'nullable',
+            //         'image' => 'nullable|image',
+            //     ]);
+            //     if ($request->hasFile('image')) {
+            //         $image = $request->file('image');
+            //         $imagePath = $image->store('user_images', 'public');
+            //         $imageFullPath = 'storage/' . $imagePath;
+            //     } else {
+            //         $imageFullPath = null;
+            //     }
+            //     $flock = Flock::find($validatedData['flock_id']);
+            //     if (!$flock) {
+            //         return response()->json(['success' => false, 'message' => 'Flock not found'], 400);
+            //     }
+            //     $password = Str::random(8);
+            //     $user = User::Create([
+            //         'added_user_id' => $userId,
+            //         'name' =>  $validatedData['name'],
+            //         'user_role' =>  $validatedData['role'],
+            //         'email' => $validatedData['email'],
+            //         'user_phone' => $validatedData['phone'],
+            //         'address' => $validatedData['address'],
+            //         'password' => $password,
+            //         'user_image' => $imageFullPath,
+            //         'module_id' => "2,5",
+            //         'user_status' => 1,
+            //     ]);
+            //     $roleToFieldMap = [
+            //         'fl_supervisor' => 'flock_supervisor_user_id',
+            //         'fl_accountant' => 'flock_accountant_user_id',
+            //         'fl_assistant' => 'flock_assistant_user_id',
+            //     ];
+
+            //     if (isset($roleToFieldMap[$validatedData['role']])) {
+            //         $flock->{$roleToFieldMap[$validatedData['role']]} = $user->id;
+            //     }
+            //     $flock->save();
+            //     Mail::to($validatedData['email'])->send(new LoginInfoMail(
+            //         $validatedData['name'],
+            //         $validatedData['email'],
+            //         $password 
+            //     ));
+            //     return response()->json(['success' => true, 'message' => 'Worker add successfully'], 200);
+
             if ($request->input('worker_id')) {
                 $validatedData = $request->validate([
                     'worker_id' => 'required',
                     'flock_id' => 'required|integer|exists:flocks,flock_id',
                     'role' => 'required|in:fl_supervisor,fl_accountant,fl_assistant',
                 ]);
-
+            
                 $flock = Flock::find($validatedData['flock_id']);
                 if (!$flock) {
                     return response()->json(['success' => false, 'message' => 'Flock not found'], 400);
                 }
-
+            
                 $roleToFieldMap = [
                     'fl_supervisor' => 'flock_supervisor_user_id',
                     'fl_accountant' => 'flock_accountant_user_id',
                     'fl_assistant' => 'flock_assistant_user_id',
                 ];
-
+            
                 if (isset($roleToFieldMap[$validatedData['role']])) {
                     $flock->{$roleToFieldMap[$validatedData['role']]} = $validatedData['worker_id'];
                 }
-
+            
                 $flock->save();
-
+            
                 return response()->json(['success' => true, 'message' => 'Flock updated successfully']);
             } else {
-
                 $userId = Auth::user()->id;
                 $validatedData = $request->validate([
                     'flock_id' => 'required|integer|exists:flocks,flock_id',
                     'role' => 'required|in:fl_supervisor,fl_accountant,fl_assistant',
                     'name' => 'required',
-                    'email' => 'required|unique:users,email',
+                    'email' => 'required|email',
                     'phone' => 'nullable',
                     'address' => 'nullable',
                     'image' => 'nullable|image',
                 ]);
+            
                 if ($request->hasFile('image')) {
                     $image = $request->file('image');
                     $imagePath = $image->store('user_images', 'public');
@@ -62,40 +140,77 @@ class FlockUserController extends Controller
                 } else {
                     $imageFullPath = null;
                 }
+            
                 $flock = Flock::find($validatedData['flock_id']);
                 if (!$flock) {
                     return response()->json(['success' => false, 'message' => 'Flock not found'], 400);
                 }
-                $password = Str::random(8);
-                $user = User::Create([
-                    'added_user_id' => $userId,
-                    'name' =>  $validatedData['name'],
-                    'user_role' =>  $validatedData['role'],
-                    'email' => $validatedData['email'],
-                    'user_phone' => $validatedData['phone'],
-                    'address' => $validatedData['address'],
-                    'password' => $password,
-                    'user_image' => $imageFullPath,
-                    'module_id' => "2,5",
-                    'user_status' => 1,
-                ]);
+            
+                // Check if user already exists by email
+                $user = User::where('email', $validatedData['email'])->first();
+            
+                if ($user) {
+                    // List of restricted roles
+                    $restrictedRoles = ['fl_supervisor', 'fl_accountant', 'fl_assistant'];
+                
+                    // If the user already has a restricted role but is trying to change it, show an error
+                    if (in_array($user->user_role, $restrictedRoles) && $user->user_role !== $validatedData['role']) {
+                        return response()->json([
+                            'success' => false, 
+                            'message' => 'User already exists as a ' . $user->user_role . ' and cannot be assigned a different role.'
+                        ], 400);
+                    }
+                
+                    // Update user details (role remains the same if unchanged)
+                    $user->name = $validatedData['name'];
+                    $user->user_phone = $validatedData['phone'];
+                    $user->address = $validatedData['address'];
+                    if ($imageFullPath) {
+                        $user->user_image = $imageFullPath;
+                    }
+                    $user->save();
+                } else {
+                    // Create new user
+                    $password = Str::random(8);
+                    $user = User::create([
+                        'added_user_id' => $userId,
+                        'name' => $validatedData['name'],
+                        'user_role' => $validatedData['role'],
+                        'email' => $validatedData['email'],
+                        'user_phone' => $validatedData['phone'],
+                        'address' => $validatedData['address'],
+                        'password' => $password,
+                        'user_image' => $imageFullPath,
+                        'module_id' => "2,5",
+                        'user_status' => 1,
+                    ]);
+                
+                    // Send login details only for new users
+                    Mail::to($validatedData['email'])->send(new LoginInfoMail(
+                        $validatedData['name'],
+                        $validatedData['email'],
+                        $password
+                    ));
+                }
+                
+                
+            
                 $roleToFieldMap = [
                     'fl_supervisor' => 'flock_supervisor_user_id',
                     'fl_accountant' => 'flock_accountant_user_id',
                     'fl_assistant' => 'flock_assistant_user_id',
                 ];
-
+            
                 if (isset($roleToFieldMap[$validatedData['role']])) {
                     $flock->{$roleToFieldMap[$validatedData['role']]} = $user->id;
                 }
+            
                 $flock->save();
-                Mail::to($validatedData['email'])->send(new LoginInfoMail(
-                    $validatedData['name'],
-                    $validatedData['email'],
-                    $password 
-                ));
-                return response()->json(['success' => true, 'message' => 'Worker add successfully'], 200);
+            
+                return response()->json(['success' => true, 'message' => $user->wasRecentlyCreated ? 'Worker added successfully' : 'Worker updated successfully'], 200);
             }
+            
+         
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
         }
