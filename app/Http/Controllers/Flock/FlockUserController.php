@@ -162,12 +162,13 @@ class FlockUserController extends Controller
                     }
                 
                     // Update user details (role remains the same if unchanged)
-                    $user->name = $validatedData['name'];
-                    $user->user_phone = $validatedData['phone'];
-                    $user->address = $validatedData['address'];
-                    if ($imageFullPath) {
-                        $user->user_image = $imageFullPath;
-                    }
+                    // $user->name = $validatedData['name'];
+                    // $user->user_phone = $validatedData['phone'];
+                    // $user->address = $validatedData['address'];
+                    $user->user_role = $validatedData['role'];
+                    // if ($imageFullPath) {
+                    //     $user->user_image = $imageFullPath;
+                    // }
                     $user->save();
                 } else {
                     // Create new user
