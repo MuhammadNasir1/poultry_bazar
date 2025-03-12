@@ -167,6 +167,7 @@ class OrderController extends Controller
         $orders = $query->get();
         foreach ($orders as $order) {
             $order->order_date = Carbon::parse($order->created_at)->format('M d, Y');
+            $order->order_item_details = json_decode($order->order_item_details , true);
         }
 
         $report['from_date'] = $fromDate;
