@@ -136,7 +136,7 @@ class OrderController extends Controller
         $dateFrom = request('date_from');
         $dateTo = request('date_to');
 
-        $query = Orders::select('customer_name', 'customer_phone', 'grand_total', 'created_at')->where('user_id', $user->id);
+        $query = Orders::select('customer_name', 'customer_phone', 'grand_total', 'created_at' , 'order_item_details')->where('user_id', $user->id);
 
         if ($filter === 'today') {
             $query->whereDate('created_at', Carbon::today());
