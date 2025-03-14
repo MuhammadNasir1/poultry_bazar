@@ -82,7 +82,7 @@ class OrderController extends Controller
         $productVariations = ProductVariations::whereIn('product_id', $productsQuery->pluck('product_id'))->where('variation_status', 1);
 
         
-        $PurchaseStock = PosPurchase::where('user_id', $user->id)->where('purchase_status', 1);
+        $PurchaseStock = PosPurchase::select('purchase_amount')->where('user_id', $user->id)->where('purchase_status', 1);
         if ($filter === 'today') {
             $query->whereDate('created_at', Carbon::today());
             $productsQuery->whereDate('created_at', Carbon::today());
@@ -106,7 +106,8 @@ class OrderController extends Controller
         $totalOrders = $query->count();
         $totalProducts = $productsQuery->count();
         $productVariations = $productVariations->count();
-        $PurchaseStock = $PurchaseStock->count();
+        $totalPurchaseAmount = $PurchaseStock->sum('purchase_amount');
+
 
         // Build response data
         $data = [
@@ -114,7 +115,7 @@ class OrderController extends Controller
             ['total_sales' => $totalSales],
             ['total_orders' => $totalOrders],
             ['product_variations' => $productVariations],
-            ['Purchase_stock' => $PurchaseStock],
+            ['Purchase_stock' => $totalPurchaseAmount],
         ];
 
 
