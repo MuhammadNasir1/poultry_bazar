@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\CatchingController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ECommerce\EcomProductsController;
@@ -80,6 +81,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/addWorker', 'insertUser');
         Route::get('/getWorkers', 'getUserWorkers');
         Route::post('/deleteWorkers', 'deleteUser');
+    });
+
+    Route::controller(CatchingController::class)->group(function () {
+        Route::post('/addPreCatching', 'createPreCatching');
+        Route::get('/getCatchingDrivers', 'getDrivers');
+        Route::get('/getCatchingData/{driver_id}', 'getSingleData');
+        Route::post('/addDuringCatching/{catching_id}', 'addDuringCatching');
     });
 
     // E-commerce Api
