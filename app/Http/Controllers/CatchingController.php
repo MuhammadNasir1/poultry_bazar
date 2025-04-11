@@ -71,12 +71,9 @@ class CatchingController extends Controller
     public function getDrivers()
     {
         try {
-            $drivers = Catching::select('cat_driver_info')->get();
-
-            foreach ($drivers as $driver) {
-                $data = json_decode($driver->cat_driver_info, true);
-            }
-            return response()->json(['success' => true, 'data' => $data], 200);
+            $userId = Auth::user()->id;
+            $drivers = Catching::select('cat_driver_info')->where('user_id' , $userId )->get();
+            return response()->json(['success' => true, 'data' => $drivers], 200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' => 'Error in fetching drivers', 'error' => $e->getMessage()], 500);
         }
