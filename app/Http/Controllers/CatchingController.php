@@ -17,7 +17,6 @@ class CatchingController extends Controller
         try {
             $user = Auth::user();
             $validatedData = $request->validate([
-                'user_id' => 'required',
                 'flock_id' => 'required',
                 'cat_date' => 'required',
                 'cat_receipt' => 'required',
