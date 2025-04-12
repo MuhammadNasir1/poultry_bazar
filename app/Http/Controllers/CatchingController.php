@@ -37,9 +37,8 @@ class CatchingController extends Controller
 
             if ($request->hasFile('cat_f_receipt')) {
 
-                $image = $request->file('category_image');
-                // Store the image in the 'animal_images' folder and get the file path
-                $imagePath = $image->store('catching_images/receipt', 'public'); // stored in 'storage/app/public/animal_images'
+                $image = $request->file('cat_f_receipt');
+                $imagePath = $image->store('catching_images/receipt', 'public');
                 $imageFullPath = 'storage/' . $imagePath;
                 $image = $imageFullPath;
             }
@@ -72,23 +71,23 @@ class CatchingController extends Controller
     {
         try {
             $userId = Auth::user()->id;
-            $drivers = Catching::select('cat_driver_info')->where('user_id' , $userId )->get();
+            $drivers = Catching::select('cat_driver_info')->where('user_id', $userId)->get();
             return response()->json(['success' => true, 'data' => $drivers], 200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' => 'Error in fetching drivers', 'error' => $e->getMessage()], 500);
         }
     }
 
-    public function getBrokers(){
+    public function getBrokers()
+    {
 
         try {
             $userId = Auth::user()->id;
-            $brokers = Catching::select('cat_broker_info')->where('user_id' , $userId )->get();
+            $brokers = Catching::select('cat_broker_info')->where('user_id', $userId)->get();
             return response()->json(['success' => true, 'data' => $brokers], 200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' => 'Error in fetching brokers', 'error' => $e->getMessage()], 500);
         }
-
     }
 
     public function getSingleData($driver_id)
@@ -123,6 +122,52 @@ class CatchingController extends Controller
             $catching->cat_empty_weight = $validatedData['cat_empty_weight'];
             $catching->update();
             return response()->json(['success' => true, 'data' => $catching], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error in fetching catchings by driver ID', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function createCatchingGatePass(Request $request, $catching_id)
+    {
+        try {
+
+            $validatedData = $request->validate([
+                'cat_total' => 'required',
+                'cat_grand_total' => 'required',
+                'cat_load_weight' => 'required',
+                'cat_mound_type' => 'required',
+                'cat_mound_type' => 'required',
+                'cat_second_payment' => 'required',
+                'cat_second_cash' => 'nullable',
+                'cat_second_online' => 'nullable',
+                'cat_second_cash_notes' => 'nullable',
+                'cat_remaining' => 'required',
+                'cat_second_receipt' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+            ]);
+            if ($request->hasFile('cat_second_receipt')) {
+
+                $image = $request->file('cat_second_receipt');
+                $imagePath = $image->store('catching_images/receipt', 'public');
+                $imageFullPath = 'storage/' . $imagePath;
+                $image = $imageFullPath;
+            }
+
+            $gatePass = Catching::find($catching_id);
+            if (!$gatePass) {
+                return response()->json(['success' => false, 'message' => 'Catching not found'], 404);
+            }
+            $gatePass->cat_load_weight = $validatedData['cat_load_weight'];
+            $gatePass->cat_mound_type = $validatedData['cat_mound_type'];
+            $gatePass->cat_second_payment = $validatedData['cat_second_payment'];
+            $gatePass->cat_second_cash = $validatedData['cat_second_cash'];
+            $gatePass->cat_second_online = $validatedData['cat_second_online'];
+            $gatePass->cat_second_cash_notes = json_encode($validatedData['cat_second_cash_notes'], true);
+            $gatePass->cat_remaining = $validatedData['cat_remaining'];
+            $gatePass->cat_second_receipt = $image ?? null;
+            $gatePass->cat_total = $validatedData['cat_total'];
+            $gatePass->cat_grand_total = $validatedData['cat_grand_total'];
+            $gatePass->update();
+            return response()->json(['success' => true, 'message' => 'GatePass added successfully', 'data' => $gatePass], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error in fetching catchings by driver ID', 'error' => $e->getMessage()], 500);
         }

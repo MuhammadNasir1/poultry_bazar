@@ -55,6 +55,10 @@ class Catching extends Model
     {
         return json_decode($value, true);
     }
+    public function catSecondCashNotesAttribute($value)
+    {
+        return json_decode($value, true);
+    }
 
     
      

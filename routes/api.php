@@ -45,7 +45,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::match(['get', 'post'], '/deleteVariation/{variation_id}',  'deleteVariation');
         Route::post('/updateVariation/{variation_id}', 'updateVariation');
         Route::get('/getProductStock', 'getProductStock');
-
     });
     Route::controller(CustomerController::class)->group(function () {
         Route::get('/getCustomers', 'getCustomers');
@@ -89,6 +88,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/getCatchingBrokers', 'getBrokers');
         Route::get('/getCatchingData/{driver_id}', 'getSingleData');
         Route::post('/addDuringCatching/{catching_id}', 'addDuringCatching');
+        Route::post('/addCatchingGatePass/{catching_id}', 'createCatchingGatePass');
     });
 
     // E-commerce Api
