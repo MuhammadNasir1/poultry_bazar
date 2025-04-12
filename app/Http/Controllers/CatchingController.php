@@ -92,7 +92,7 @@ class CatchingController extends Controller
     public function getSingleData($driver_id)
     {
         try {
-            $driverId = (int) $driver_id;
+            $driverId = $driver_id;
             if (!$driverId) {
                 return response()->json(['success' => false, 'message' => 'Driver ID is required'], 422);
             }
