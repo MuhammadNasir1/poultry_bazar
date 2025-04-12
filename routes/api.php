@@ -86,6 +86,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(CatchingController::class)->group(function () {
         Route::post('/addPreCatching', 'createPreCatching');
         Route::get('/getCatchingDrivers', 'getDrivers');
+        Route::get('/getCatchingBrokers', 'getBrokers');
         Route::get('/getCatchingData/{driver_id}', 'getSingleData');
         Route::post('/addDuringCatching/{catching_id}', 'addDuringCatching');
     });

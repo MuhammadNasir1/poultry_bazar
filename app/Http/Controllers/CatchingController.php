@@ -79,6 +79,18 @@ class CatchingController extends Controller
         }
     }
 
+    public function getBrokers(){
+
+        try {
+            $userId = Auth::user()->id;
+            $brokers = Catching::select('cat_broker_info')->where('user_id' , $userId )->get();
+            return response()->json(['success' => true, 'data' => $brokers], 200);
+        } catch (\Exception $e) {
+            return response(['success' => false, 'message' => 'Error in fetching brokers', 'error' => $e->getMessage()], 500);
+        }
+
+    }
+
     public function getSingleData($driver_id)
     {
         try {
