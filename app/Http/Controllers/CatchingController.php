@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Catching;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\CssSelector\Node\FunctionNode;
 
 class CatchingController extends Controller
@@ -69,8 +70,20 @@ class CatchingController extends Controller
     public function getDrivers()
     {
         try {
+            // $userId = Auth::user()->id;
+            // $drivers = Catching::select('cat_driver_info')->where('user_id', $userId)->get();
             $userId = Auth::user()->id;
-            $drivers = Catching::select('cat_driver_info')->where('user_id', $userId)->get();
+
+            $drivers = DB::table('catching')
+                ->select(
+                    DB::raw("JSON_UNQUOTE(JSON_EXTRACT(cat_driver_info, '$.driver_id')) as driver_id"),
+                    DB::raw("JSON_UNQUOTE(JSON_EXTRACT(cat_driver_info, '$.name')) as name"),
+                    DB::raw("JSON_UNQUOTE(JSON_EXTRACT(cat_driver_info, '$.contact')) as contact")
+                )
+                ->where('user_id', $userId)
+                ->groupBy('driver_id', 'name', 'contact')
+                ->get();
+
             return response()->json(['success' => true, 'data' => $drivers], 200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' => 'Error in fetching drivers', 'error' => $e->getMessage()], 500);
@@ -97,9 +110,10 @@ class CatchingController extends Controller
                 return response()->json(['success' => false, 'message' => 'Driver ID is required'], 422);
             }
 
-            $catchings = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->get();
+            // $catchings = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->get();
+            $catching = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->orderByDesc('created_at')->first();
 
-            return response()->json(['success' => true, 'data' => $catchings], 200);
+            return response()->json(['success' => true, 'data' => $catching], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error in fetching catchings by driver ID', 'error' => $e->getMessage()], 500);
         }
