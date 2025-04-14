@@ -74,15 +74,20 @@ class CatchingController extends Controller
             // $drivers = Catching::select('cat_driver_info')->where('user_id', $userId)->get();
             $userId = Auth::user()->id;
 
-            $drivers = DB::table('catching')
-                ->select(
-                    DB::raw("JSON_UNQUOTE(JSON_EXTRACT(cat_driver_info, '$.driver_id')) as driver_id"),
-                    DB::raw("JSON_UNQUOTE(JSON_EXTRACT(cat_driver_info, '$.name')) as name"),
-                    DB::raw("JSON_UNQUOTE(JSON_EXTRACT(cat_driver_info, '$.contact')) as contact")
-                )
+            $rawDrivers = DB::table('catching')
+                ->select('cat_driver_info')
                 ->where('user_id', $userId)
-                ->groupBy('driver_id', 'name', 'contact')
                 ->get();
+
+            // Decode each JSON object and filter duplicates
+            $drivers = collect($rawDrivers)
+                ->map(function ($item) {
+                    return json_decode($item->cat_driver_info, true);
+                })
+                ->unique(function ($info) {
+                    return $info['driver_id'] . '_' . $info['name'] . '_' . $info['contact'];
+                })
+                ->values(); // reset the index
 
             return response()->json(['success' => true, 'data' => $drivers], 200);
         } catch (\Exception $e) {
@@ -94,8 +99,23 @@ class CatchingController extends Controller
     {
 
         try {
+            // $userId = Auth::user()->id;
+            // $brokers = Catching::select('cat_broker_info')->where('user_id', $userId)->get();
             $userId = Auth::user()->id;
-            $brokers = Catching::select('cat_broker_info')->where('user_id', $userId)->get();
+
+            $rawBrokers = DB::table('catching')
+                ->select('cat_broker_info')
+                ->where('user_id', $userId)
+                ->get();
+
+            // Decode JSON and remove duplicates by name
+            $brokers = collect($rawBrokers)
+                ->map(function ($item) {
+                    return json_decode($item->cat_broker_info, true);
+                })
+                ->unique('name')
+                ->values();
+
             return response()->json(['success' => true, 'data' => $brokers], 200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' => 'Error in fetching brokers', 'error' => $e->getMessage()], 500);
