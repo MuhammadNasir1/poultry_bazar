@@ -198,6 +198,9 @@ class MediaController extends Controller
                     $imagePath = $image->store('media_images', 'public'); // stored in 'storage/app/public/animal_images'
                     $imageFullPath = 'storage/' . $imagePath;
                     $media->media_image = $imageFullPath;
+                } else {
+                    $media->media_image = "";
+                    $media->media_image = $request->input('media_image'); // Assign text if not a file
                 }
 
                 if ($request->hasFile('media_subtitle')) {
@@ -232,8 +235,8 @@ class MediaController extends Controller
                     // Store the image in the 'animal_images' folder and get the file path
                     $imagePath = $image->store('media_images', 'public'); // stored in 'storage/app/public/animal_images'
                     $imageFullPath = 'storage/' . $imagePath;
-                } else {
-                    $imageFullPath = null;
+                }  else {
+                    $imageFullPath = $request->input('media_image'); // Assign text if not a file
                 }
 
                 if($request->hasFile('media_subtitle')){
