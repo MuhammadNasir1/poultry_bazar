@@ -30,6 +30,7 @@ class Catching extends Model
         'cat_remaining',
         'cat_empty_weight',
         'cat_load_weight',
+        'cat_paid_weight',
         'cat_mound_type',
         'cat_second_payment',
         'cat_second_cash',

@@ -146,6 +146,7 @@ class CatchingController extends Controller
 
             $validatedData = $request->validate([
                 'cat_empty_weight' => 'required',
+                'cat_paid_weight' => 'required',
 
             ]);
             $catching = Catching::find($catching_id);
@@ -153,6 +154,7 @@ class CatchingController extends Controller
                 return response()->json(['success' => false, 'message' => 'Catching not found'], 404);
             }
             $catching->cat_empty_weight = $validatedData['cat_empty_weight'];
+            $catching->cat_paid_weight = $validatedData['cat_paid_weight'];
             $catching->update();
             return response()->json(['success' => true, 'data' => $catching], 200);
         } catch (\Exception $e) {
@@ -168,7 +170,6 @@ class CatchingController extends Controller
                 'cat_total' => 'required',
                 'cat_grand_total' => 'required',
                 'cat_load_weight' => 'required',
-                'cat_mound_type' => 'required',
                 'cat_mound_type' => 'required',
                 'cat_second_payment' => 'required',
                 'cat_second_cash' => 'nullable',
