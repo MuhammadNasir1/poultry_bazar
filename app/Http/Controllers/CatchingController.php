@@ -131,7 +131,7 @@ class CatchingController extends Controller
             }
 
             // $catchings = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->get();
-            $catching = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->orderByDesc('created_at')->first();
+            $catching[] = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->orderByDesc('created_at')->first();
 
             return response()->json(['success' => true, 'data' => $catching], 200);
         } catch (\Exception $e) {
