@@ -168,7 +168,7 @@ class CatchingController extends Controller
             $gatePass->update();
             return response()->json(['success' => true, 'message' => 'GatePass added successfully', 'data' => $gatePass], 200);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Error in fetching catchings by driver ID', 'error' => $e->getMessage()], 500);
+            return response()->json(['success' => false,  'message' => $e->getMessage()], 500);
         }
     }
 }
