@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Catching;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\CssSelector\Node\FunctionNode;
 
 class CatchingController extends Controller
@@ -69,8 +70,25 @@ class CatchingController extends Controller
     public function getDrivers()
     {
         try {
+            // $userId = Auth::user()->id;
+            // $drivers = Catching::select('cat_driver_info')->where('user_id', $userId)->get();
             $userId = Auth::user()->id;
-            $drivers = Catching::select('cat_driver_info')->where('user_id', $userId)->get();
+
+            $rawDrivers = DB::table('catching')
+                ->select('cat_driver_info')
+                ->where('user_id', $userId)
+                ->get();
+
+            // Decode each JSON object and filter duplicates
+            $drivers = collect($rawDrivers)
+                ->map(function ($item) {
+                    return json_decode($item->cat_driver_info, true);
+                })
+                ->unique(function ($info) {
+                    return $info['driver_id'] . '_' . $info['name'] . '_' . $info['contact'];
+                })
+                ->values(); // reset the index
+
             return response()->json(['success' => true, 'data' => $drivers], 200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' => 'Error in fetching drivers', 'error' => $e->getMessage()], 500);
@@ -81,8 +99,23 @@ class CatchingController extends Controller
     {
 
         try {
+            // $userId = Auth::user()->id;
+            // $brokers = Catching::select('cat_broker_info')->where('user_id', $userId)->get();
             $userId = Auth::user()->id;
-            $brokers = Catching::select('cat_broker_info')->where('user_id', $userId)->get();
+
+            $rawBrokers = DB::table('catching')
+                ->select('cat_broker_info')
+                ->where('user_id', $userId)
+                ->get();
+
+            // Decode JSON and remove duplicates by name
+            $brokers = collect($rawBrokers)
+                ->map(function ($item) {
+                    return json_decode($item->cat_broker_info, true);
+                })
+                ->unique('name')
+                ->values();
+
             return response()->json(['success' => true, 'data' => $brokers], 200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' => 'Error in fetching brokers', 'error' => $e->getMessage()], 500);
@@ -97,9 +130,10 @@ class CatchingController extends Controller
                 return response()->json(['success' => false, 'message' => 'Driver ID is required'], 422);
             }
 
-            $catchings = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->get();
+            // $catchings = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->get();
+            $catching[] = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->orderByDesc('created_at')->first();
 
-            return response()->json(['success' => true, 'data' => $catchings], 200);
+            return response()->json(['success' => true, 'data' => $catching], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error in fetching catchings by driver ID', 'error' => $e->getMessage()], 500);
         }
@@ -112,6 +146,7 @@ class CatchingController extends Controller
 
             $validatedData = $request->validate([
                 'cat_empty_weight' => 'required',
+                'cat_paid_weight' => 'required',
 
             ]);
             $catching = Catching::find($catching_id);
@@ -119,6 +154,7 @@ class CatchingController extends Controller
                 return response()->json(['success' => false, 'message' => 'Catching not found'], 404);
             }
             $catching->cat_empty_weight = $validatedData['cat_empty_weight'];
+            $catching->cat_paid_weight = $validatedData['cat_paid_weight'];
             $catching->update();
             return response()->json(['success' => true, 'data' => $catching], 200);
         } catch (\Exception $e) {
@@ -134,7 +170,6 @@ class CatchingController extends Controller
                 'cat_total' => 'required',
                 'cat_grand_total' => 'required',
                 'cat_load_weight' => 'required',
-                'cat_mound_type' => 'required',
                 'cat_mound_type' => 'required',
                 'cat_second_payment' => 'required',
                 'cat_second_cash' => 'nullable',
