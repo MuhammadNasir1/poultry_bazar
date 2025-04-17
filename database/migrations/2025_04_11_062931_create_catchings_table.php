@@ -34,7 +34,7 @@ return new class extends Migration
             $table->float('cat_empty_weight')->nullable();
             $table->float('cat_load_weight')->nullable();
             $table->float('cat_paid_weight')->nullable();
-            $table->float('cat_mound_type')->nullable();
+            $table->integer('cat_mound_type')->nullable();
             $table->float('cat_second_payment')->nullable();
             $table->float('cat_second_cash')->nullable();
             $table->float('cat_second_online')->nullable();

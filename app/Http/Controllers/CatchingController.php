@@ -19,6 +19,7 @@ class CatchingController extends Controller
             $user = Auth::user();
             $validatedData = $request->validate([
                 'flock_id' => 'required',
+                'cat_mound_type' => 'required',
                 'cat_date' => 'required',
                 'cat_receipt' => 'required',
                 'cat_driver_info' => 'required',
@@ -46,6 +47,7 @@ class CatchingController extends Controller
             $catching = Catching::create([
                 'user_id' => $user->id,
                 'flock_id' => $validatedData['flock_id'],
+                'cat_mound_type' => $validatedData['cat_mound_type'],
                 'cat_date' => $validatedData['cat_date'],
                 'cat_receipt' => $validatedData['cat_receipt'],
                 'cat_driver_info' => json_encode($validatedData['cat_driver_info'], true),
@@ -170,7 +172,7 @@ class CatchingController extends Controller
                 'cat_total' => 'required',
                 'cat_grand_total' => 'required',
                 'cat_load_weight' => 'required',
-                'cat_mound_type' => 'required',
+                'cat_mound_type' => 'nullable',
                 'cat_second_payment' => 'required',
                 'cat_second_cash' => 'nullable',
                 'cat_second_online' => 'nullable',
@@ -191,7 +193,7 @@ class CatchingController extends Controller
                 return response()->json(['success' => false, 'message' => 'Catching not found'], 404);
             }
             $gatePass->cat_load_weight = $validatedData['cat_load_weight'];
-            $gatePass->cat_mound_type = $validatedData['cat_mound_type'];
+            $gatePass->cat_mound_type = $request['cat_mound_type'];
             $gatePass->cat_second_payment = $validatedData['cat_second_payment'];
             $gatePass->cat_second_cash = $validatedData['cat_second_cash'];
             $gatePass->cat_second_online = $validatedData['cat_second_online'];
