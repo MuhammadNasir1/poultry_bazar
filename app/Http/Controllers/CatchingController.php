@@ -124,20 +124,35 @@ class CatchingController extends Controller
         }
     }
 
-    public function getSingleData($driver_id)
+    public function getCatchingData(Request $request, $driver_id)
     {
         try {
-            $driverId = $driver_id;
+            $driverId = $driver_id ?? null;
+
             if (!$driverId) {
                 return response()->json(['success' => false, 'message' => 'Driver ID is required'], 422);
             }
 
-            // $catchings = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->get();
-            $catching[] = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)->orderByDesc('created_at')->first();
+            // Properly check if 'type' query param is set and equals 'all'
+            if ($request->query('type') === 'all') {
+                $catching = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)
+                    ->orderByDesc('created_at')
+                    ->get();
+            } else {
+                $single = Catching::whereJsonContains('cat_driver_info->driver_id', $driverId)
+                    ->orderByDesc('created_at')
+                    ->first();
+
+                $catching = $single ? [$single] : [];
+            }
 
             return response()->json(['success' => true, 'data' => $catching], 200);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Error in fetching catchings by driver ID', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error in fetching catchings by driver ID',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
