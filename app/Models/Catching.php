@@ -37,6 +37,7 @@ class Catching extends Model
         'cat_second_online',
         'cat_second_receipt',
         'cat_second_cash_notes',
+        'party_name',
 
     ];
 

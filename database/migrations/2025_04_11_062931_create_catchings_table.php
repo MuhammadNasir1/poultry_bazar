@@ -40,6 +40,7 @@ return new class extends Migration
             $table->float('cat_second_online')->nullable();
             $table->string('cat_second_receipt')->nullable();
             $table->json('cat_second_cash_notes')->nullable();
+            $table->string('party_name')->nullable();
             $table->timestamps();
         });
     }
