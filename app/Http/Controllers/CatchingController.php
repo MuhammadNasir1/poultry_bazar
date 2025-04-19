@@ -187,7 +187,6 @@ class CatchingController extends Controller
                 'cat_total' => 'required',
                 'cat_grand_total' => 'required',
                 'cat_load_weight' => 'required',
-                'cat_mound_type' => 'nullable',
                 'cat_second_payment' => 'required',
                 'cat_second_cash' => 'nullable',
                 'cat_second_online' => 'nullable',
@@ -209,7 +208,6 @@ class CatchingController extends Controller
                 return response()->json(['success' => false, 'message' => 'Catching not found'], 404);
             }
             $gatePass->cat_load_weight = $validatedData['cat_load_weight'];
-            $gatePass->cat_mound_type = $request['cat_mound_type'];
             $gatePass->cat_second_payment = $validatedData['cat_second_payment'];
             $gatePass->cat_second_cash = $validatedData['cat_second_cash'];
             $gatePass->cat_second_online = $validatedData['cat_second_online'];
