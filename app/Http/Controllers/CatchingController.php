@@ -194,6 +194,7 @@ class CatchingController extends Controller
                 'cat_remaining' => 'required',
                 'party_name' => 'nullable',
                 'cat_second_receipt' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
+                'cat_net_weight' => 'required',
             ]);
             if ($request->hasFile('cat_second_receipt')) {
 
@@ -217,6 +218,7 @@ class CatchingController extends Controller
             $gatePass->cat_total = $validatedData['cat_total'];
             $gatePass->cat_grand_total = $validatedData['cat_grand_total'];
             $gatePass->party_name = $validatedData['party_name'];
+            $gatePass->cat_net_weight = $validatedData['cat_net_weight'];
             $gatePass->update();
             return response()->json(['success' => true, 'message' => 'GatePass added successfully', 'data' => $gatePass], 200);
         } catch (\Exception $e) {
