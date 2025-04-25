@@ -1,8 +1,8 @@
 @extends('landingPage.layout')
-    @section('title')
+@section('title')
     Knowledge Center
-    @endsection
-    
+@endsection
+
 @section('content')
     <div class="mt-10">
         <div class="bg-gradient-to-b from-[#fcb2764c] to-[#fe89296f]  min-h-[360px] flex justify-center items-center">
@@ -13,14 +13,14 @@
                     insights to make informed decisions on buying and selling, helping you maximize your profits in a
                     competitive market.</p>
             </div>
-        </div>  
+        </div>
 
         <div class="m-10   container mx-auto">
 
 
             <div class="mb-4  ">
                 <ul class="  text-sm font-medium text-center grid grid-cols-3 xl:gap-32 lg:gap-10" id="default-tab"
-                    data-tabs-toggle="#default-tab-content" role="tablist"  
+                    data-tabs-toggle="#default-tab-content" role="tablist"
                     data-tabs-active-classes="text-white bg-[#FE8A29]">
                     <li class="me-2" role="presentation">
                         <button
@@ -49,14 +49,13 @@
                         {{-- @for ($i = 1; $i < 8; $i++) --}}
                         @foreach ($data['blogs'] as $blog)
                             <div data-modal-target="details-Modal" data-modal-toggle="details-Modal"
-                                class="transition detailBtn h-[430px] bg-white rounded-lg shadow hover:shadow-lg cursor-pointer"
+                                class=" truncate   transition detailBtn h-[430px] bg-white rounded-lg shadow hover:shadow-lg cursor-pointer"
                                 mediaTitle="{{ $blog->media_title }}" mediaAuthor="{{ $blog->media_author }}"
                                 mediaCategory="{{ $blog->category_name }}" mediaDate="{{ $blog->date }}"
                                 mediaDescription="{{ $blog->media_description }}" mediaId="{{ $blog->media_id }}"
                                 mediaImage="{{ $blog->media_image ?? asset('assets/default-logo-req.png') }}">
-                                <img loading="lazy"
-                                    src="{{ $blog->media_image ?? asset('assets/default-logo-req.png') }}"
-                                    alt="Blog Post Image" class="object-cover w-full h-60 rounded-t-lg rounded-b-none">
+                                <img loading="lazy" src="{{ $blog->media_image ?? asset('assets/default-logo-req.png') }}"
+                                    alt="Blog Post Image" class="object-cover w-full max-h-60 rounded-t-lg rounded-b-none">
                                 <div class="p-4">
                                     <div class="flex items-center mb-2 text-sm text-customOrangeDark">
                                         <span class="px-2 py-1 bg-orange-100 rounded-full">{{ $blog->category_name }}</span>
@@ -65,20 +64,20 @@
                                         <span class="mr-2">{{ $blog->media_author }}</span> | <span
                                             class="ml-2">{{ $blog->date }}</span>
                                     </div>
-                                    <h3 class="mb-2 text-lg font-semibold text-gray-800">{{  \Illuminate\Support\Str::limit($blog->media_title, 45, '...')}}</h3>
-                                    <p class="text-sm text-gray-600 break-words">{!!   Str::limit($blog->media_description, 70, '...') !!}</p>
+                                    <h3 class="mb-2 text-lg font-semibold text-gray-800 truncate">
+                                        {{ \Illuminate\Support\Str::limit($blog->media_title, 45, '...') }}</h3>
+                                    <p class="text-sm text-gray-600  truncate">{!! Str::limit($blog->media_description, 48, '...') !!}</p>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
-                <div class="hidden p-4 " id="disease" role="tabpanel"
-                    aria-labelledby="disease-tab">
+                <div class="hidden p-4 " id="disease" role="tabpanel" aria-labelledby="disease-tab">
                     <div class="grid  xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-6 gap-y-10">
 
                         @foreach ($data['diseases'] as $diseases)
                             <div data-modal-target="details-Modal" data-modal-toggle="details-Modal"
-                                class="transition detailBtn h-[430px] bg-white rounded-lg shadow hover:shadow-lg cursor-pointer"
+                                class="transition truncate detailBtn h-[430px] bg-white rounded-lg shadow hover:shadow-lg cursor-pointer"
                                 mediaTitle="{{ $blog->media_title }}" mediaAuthor="{{ $diseases->media_author }}"
                                 mediaCategory="{{ $diseases->category_name }}" mediaDate="{{ $diseases->date }}"
                                 mediaDescription="{{ $diseases->media_description }}" mediaId="{{ $diseases->media_id }}"
@@ -94,35 +93,37 @@
                                         <span class="mr-2">{{ $diseases->media_author }}</span> | <span
                                             class="ml-2">{{ $diseases->date }}</span>
                                     </div>
-                                    <h3 class="mb-2 text-lg font-semibold text-gray-800">{{ \Illuminate\Support\Str::limit($diseases->media_title, 45, '...') }}</h3>
-                                    <p class="text-sm text-gray-600">{!!   Str::limit($diseases->media_description, 70, '...') !!}</p>
+                                    <h3 class="mb-2 text-lg font-semibold text-gray-800">
+                                        {{ \Illuminate\Support\Str::limit($diseases->media_title, 45, '...') }}</h3>
+                                    <p class="text-sm text-gray-600">{!! Str::limit($diseases->media_description, 70, '...') !!}</p>
                                 </div>
                             </div>
                         @endforeach
                     </div>
                 </div>
-                <div class="hidden p-4 " id="Consultancy" role="tabpanel"
-                    aria-labelledby="Consultancy-tab">
+                <div class="hidden p-4 " id="Consultancy" role="tabpanel" aria-labelledby="Consultancy-tab">
                     <div class="grid  xl:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-6 gap-y-10">
 
                         @foreach ($data['consultancy'] as $consultancy)
                             <div data-modal-target="details-Modal" data-modal-toggle="details-Modal"
-                                class="transition detailBtn h-[430px] bg-white rounded-lg shadow hover:shadow-lg cursor-pointer"
+                                class="truncate transition detailBtn h-[430px] bg-white rounded-lg shadow hover:shadow-lg cursor-pointer"
                                 mediaTitle="{{ $consultancy->media_title }}"
                                 mediaAuthor="{{ $consultancy->media_author }}"
                                 mediaCategory="{{ $consultancy->category_name }}" mediaDate="{{ $consultancy->date }}"
                                 mediaDescription="{{ $consultancy->media_description }}"
-                                mediaId="{{ $consultancy->media_id }}" mediaImage="{{ $consultancy->media_image }}">
-                                {{-- <img loading="lazy"
-                                    src="{{ $consultancy->media_image ?? asset('assets/default-logo-squere.png') }}"
-                                    alt="Blog Post Image" class="object-cover w-full h-60 rounded-t-lg rounded-b-none"> --}}
-
-                                <video loading="lazy"
+                                mediaId="{{ $consultancy->media_id }}" mediaImage="{{ $consultancy->media_subtitle }}">
+                                {{-- <a href="{{ $diseases->media_image }}" target="_blank"> --}}
+                                <img loading="lazy"
+                                    src="{{ $consultancy->media_subtitle ?? asset('assets/default-logo-squere.png') }}"
+                                    alt="Blog Post Image"
+                                    class="object-cover w-full max-h-60 rounded-t-lg rounded-b-none">
+                                {{-- </a> --}}
+                                {{-- <video loading="lazy"
                                     poster="{{ $consultancy->media_image ? '' : asset('assets/default-logo-req.png') }}"
                                     class="h-60 bg-black w-full rounded-md" height="140px" width="170px"
                                     {{ $consultancy->media_image ? 'controls' : '' }}
                                     src="{{ $consultancy->media_image ?? asset('assets/default-logo-req.png') }}">
-                                </video>
+                                </video> --}}
 
                                 <div class="p-4">
                                     <div class="flex items-center mb-2 text-sm text-customOrangeDark">
@@ -133,8 +134,9 @@
                                         <span class="mr-2">{{ $consultancy->media_author }}</span> | <span
                                             class="ml-2">{{ $consultancy->date }}</span>
                                     </div>
-                                    <h3 class="mb-2 text-lg font-semibold text-gray-800">{{  \Illuminate\Support\Str::limit($consultancy->media_title, 45, '...') }}</h3>
-                                    <p class="text-sm text-gray-600">{!!  Str::limit($consultancy->media_description, 70, '...') !!}</p>
+                                    <h3 class="mb-2 text-lg font-semibold text-gray-800">
+                                        {{ \Illuminate\Support\Str::limit($consultancy->media_title, 45, '...') }}</h3>
+                                    <p class="text-sm text-gray-600">{!! Str::limit($consultancy->media_description, 70, '...') !!}</p>
                                 </div>
                             </div>
                         @endforeach
@@ -198,9 +200,9 @@
         <x-slot name="modal_width">max-w-7xl</x-slot>
         <x-slot name="body">
             <div class="flex gap-6 lg:flex-row flex-col  ">
-                <div class="flex justify-center" id="mediaOutput">
-                    <img id="mediaImg" class="w-[500px] h-full" src="{{ asset('assets/default-logo-squere.png') }}"
-                        alt="no img">
+                <div class="flex justify-center items-start" id="mediaOutput">
+                    <img id="mediaImg" class="w-[500px]  object-contain "
+                        src="{{ asset('assets/default-logo-squere.png') }}" alt="no img">
                 </div>
                 <div class="w-full">
                     <div class="flex justify-between w-full">
@@ -245,7 +247,7 @@
                     let mediaContent;
                     if (mediaUrl && /\.(jpg|jpeg|png|gif|svg)$/i.test(mediaUrl)) {
                         mediaContent =
-                            `<img class="w-[500px] h-full" id="dImage"  src="${mediaUrl}" alt="Media Image">`;
+                            `<img class="w-[500px] object-contain" id="dImage"  src="${mediaUrl}" alt="Media Image">`;
                     } else if (mediaUrl && /\.(mp4|webm|ogg)$/i.test(mediaUrl)) { // Check if it's a video
                         mediaContent =
                             `<video class="w-[500px] h-full" controls id="dImage" src="${mediaUrl}"></video>`;

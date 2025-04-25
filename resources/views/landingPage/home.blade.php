@@ -99,8 +99,9 @@
                                 <div class="flex justify-between   m-4 ">
                                     <div>
                                         <h1 class="font-semibold"> {{ $market->market_rate }} <span
-                                                class="text-xs text-gray-500">Rs</span>   <span
-                                                class="text-xs text-gray-500">| <span class="text-black">{{$market->market_doc}}</span> DOC</span></h1>
+                                                class="text-xs text-gray-500">Rs</span> <span
+                                                class="text-xs text-gray-500">| <span
+                                                    class="text-black">{{ $market->market_doc }}</span> DOC</span></h1>
                                         <p class="font-semibold text-customOrangeDark">{{ $market->market_name }}</p>
                                     </div>
                                     <div class="flex flex-col justify-center ">
@@ -138,7 +139,8 @@
 
                         <div class="w-full h-20 border rounded-lg border-customOrangeDark">
                             <div class="m-4 ms-6">
-                                <h1 class="font-bold">{{ $marketCount }}+ <span class="text-gray-500 text-xs">More</span></h1>
+                                <h1 class="font-bold">{{ $marketCount }}+ <span class="text-gray-500 text-xs">More</span>
+                                </h1>
                                 <p class="font-bold lg:text-[15px] md:text-[12px] text-customOrangeDark whitespace-nowrap">
                                     Cities in App</p>
                             </div>
@@ -657,10 +659,10 @@
                                                     <span class="mr-2">{{ $media->media_author }}</span> | <span
                                                         class="ml-2">{{ $media->date }}</span>
                                                 </div>
-                                                <h3 class="mb-2 text-lg font-semibold text-gray-800">
-                                                    {{ \Illuminate\Support\Str::limit($media->media_title, 45, '...') }}
+                                                <h3 class="mb-2 text-lg font-semibold text-gray-800 truncate ">
+                                                    {{ \Illuminate\Support\Str::limit($media->media_title, 45) }}
                                                 </h3>
-                                                <p class="text-sm text-gray-600">
+                                                <p class="text-sm text-gray-600 truncate">
                                                     {!! \Illuminate\Support\Str::limit($media->media_description, 70, '...') !!}
                                                 </p>
                                             </div>
