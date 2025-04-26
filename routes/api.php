@@ -95,6 +95,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/addEcomProduct', [EcomProductsController::class, 'insert']);
     Route::match(['get', 'post'],  '/deleteEcomProduct/{product_id}', [EcomProductsController::class, 'deleteProduct']);
     Route::post('/updateEcomProduct/{product_id}', [EcomProductsController::class, 'updateProduct']);
+
+    Route::post('/createBoostedProduct/{product_id}', [EcomProductsController::class, 'createBoostedProduct']);
+    Route::post('/removeBoostedProduct/{product_id}', [EcomProductsController::class, 'removeBoostedProduct']);
 });
 Route::get('/getMarkets', [ApiController::class, 'getMarkets']);
 Route::post('/getMarketHistory', [ApiController::class, 'getMarketHistory']);

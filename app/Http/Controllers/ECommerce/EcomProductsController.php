@@ -88,7 +88,7 @@ class EcomProductsController extends Controller
 
             ]);
             $mediaLinks = [];
-    
+
 
             if ($request->has('mediasLinks') && is_array($request->mediasLinks)) {
                 foreach ($request->mediasLinks as $file) {
@@ -103,26 +103,26 @@ class EcomProductsController extends Controller
                         // If it's a new file, handle the replacement logic
                         $fileName = $file->getClientOriginalName();
                         $existingFilePath = 'eCommerceMediaImages/' . $fileName;
-            
+
                         // If an existing file with the same name is found, delete it
                         if (Storage::disk('public')->exists($existingFilePath)) {
                             Storage::disk('public')->delete($existingFilePath);
                         }
-            
+
                         // Store the new file
                         $filePath = $file->store('eCommerceMediaImages', 'public');
                         $newFileUrl = Storage::url($filePath);
-            
+
                         // Add the new file's URL to the mediaLinks array
                         $mediaLinks[] = $newFileUrl;
                     }
                 }
             }
-            
+
             // Encode the media links array as JSON
             $mediaLinksJson = json_encode($mediaLinks);
-            
-            
+
+
 
 
 
@@ -178,6 +178,35 @@ class EcomProductsController extends Controller
             $product->ecom_product_status = 0;
             $product->save();
             return response()->json(['success' => true, 'message' => 'Product delete successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function createBoostedProduct($product_id)
+    {
+        try {
+            $product = EcomProducts::find($product_id);
+            if (!$product) {
+                return response()->json(['success' => false, 'message' => 'Product not found'], 200);
+            }
+            $product->ecom_product_boosted = 1;
+            $product->save();
+            return response()->json(['success' => true, 'message' => 'Product boosted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+    public function removeBoostedProduct($product_id)
+    {
+        try {
+            $product = EcomProducts::find($product_id);
+            if (!$product) {
+                return response()->json(['success' => false, 'message' => 'Product not found'], 200);
+            }
+            $product->ecom_product_boosted = 0;
+            $product->save();
+            return response()->json(['success' => true, 'message' => 'Product boosted successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }

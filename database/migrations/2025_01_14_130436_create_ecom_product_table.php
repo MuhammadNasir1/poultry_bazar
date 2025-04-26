@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('ecom_product_unit')->nullable();
             $table->text('ecom_product_description')->nullable();
             $table->longText('ecom_product_media')->nullable();
+            $table->boolean('ecom_product_boosted')->default(false);
             $table->integer('ecom_product_status')->default(1);
             $table->timestamps();
         });
