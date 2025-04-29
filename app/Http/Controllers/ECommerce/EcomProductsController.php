@@ -142,9 +142,13 @@ class EcomProductsController extends Controller
         }
     }
 
-    public function getEcomProduct()
+    public function getEcomProduct(Request $request)
     {
-        $products = EcomProducts::where('ecom_product_status', 1)->get();
+        if ($request->has('company_id')) {
+            $products = EcomProducts::where('ecom_product_status', 1)->where('company_id', $request['company_id'])->get();
+        } else {
+            $products = EcomProducts::where('ecom_product_status', 1)->get();
+        }
         $categories = [];
         foreach ($products as $product) {
             $product->ecom_product_media = json_decode($product->ecom_product_media, true);
