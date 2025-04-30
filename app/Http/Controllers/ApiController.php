@@ -199,20 +199,14 @@ class ApiController extends Controller
     public function login(Request $request)
     {
         try {
-
-            $validatedData = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required|string',
-            ]); 
-            $email = $validatedData['email'];
-            $password = $validatedData['password'];
-            
+            $email = $request->input('email');
+            $password = $request->input('password');
             $user = User::where('email', $email)->first();
-            
-            if (!$user || !Hash::check($password, $user->password) || $user->user_role != 'appuser') {
+
+            if (!$user || !Hash::check($password, $user->password) && $user->user_role != 'appuser') {
                 return response()->json(['success' => false, 'message' => 'Invalid credentials'], 401);
             }
-            
+
             // Generate a personal access token for the user
             $token = $user->createToken('api-token')->plainTextToken;
 
