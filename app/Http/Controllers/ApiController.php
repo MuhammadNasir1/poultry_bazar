@@ -74,12 +74,12 @@ class ApiController extends Controller
 
             if ($purchaseId != null) {
                 $recentPurchase = PosPurchase::where('purchase_id', $purchaseId)->first();
-                // Step 1: Rollback old stock (subtract the previously added stock)
-                $product = Products::where('product_id', $recentPurchase->product_id)->first();
-                if ($product) {
-                    $product->product_stock -= $recentPurchase->purchase_weight_quantity;
-                    $product->save();
-                }
+                  // Step 1: Rollback old stock (subtract the previously added stock)
+            $product = Products::where('product_id', $recentPurchase->product_id)->first();
+            if ($product) {
+                $product->product_stock -= $recentPurchase->purchase_weight_quantity;
+                $product->save();
+            }
 
 
                 $recentPurchase->update([
@@ -95,10 +95,11 @@ class ApiController extends Controller
                 $products = Products::select('product_id', 'product_stock')->where('product_id', $validatedData['product_id'])->first();
 
                 if ($products) {
-                    $products->product_stock += $validatedData['purchase_weight_quantity'];
-                    $products->save();
+                    $products->product_stock += $validatedData['purchase_weight_quantity']; 
+                    $products->save(); 
                 }
-                return response()->json(['success' => true, 'message' => 'Purchase updated'], 200);
+            return response()->json(['success' => true, 'message' => 'Purchase updated'], 200);
+                
             } else {
                 $posPurchase = PosPurchase::create([
                     'user_id' => $user->id,
@@ -112,11 +113,11 @@ class ApiController extends Controller
                 ]);
 
                 $products = Products::select('product_id', 'product_stock')->where('product_id', $validatedData['product_id'])->first();
-
-                if ($products) {
-                    $products->product_stock += $validatedData['purchase_weight_quantity'];
-                    $products->save();
-                }
+            
+            if ($products) {
+                $products->product_stock += $validatedData['purchase_weight_quantity']; 
+                $products->save(); 
+            }
                 return response()->json(['success' => true, 'message' => 'Purchase added'], 200);
             }
         } catch (\Exception $e) {
@@ -186,11 +187,11 @@ class ApiController extends Controller
 
     // logout
     public function logout(Request $request)
-    {
-        $request->user()->currentAccessToken()->delete();
+{
+    $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['success' => true, 'message' => 'Logged out successfully'], 200);
-    }
+    return response()->json(['success' => true, 'message' => 'Logged out successfully'], 200);
+}
 
     // logout
 
@@ -198,25 +199,18 @@ class ApiController extends Controller
     public function login(Request $request)
     {
         try {
-            $validatedData = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required|string',
-            ]);
-            $email = $validatedData['email'];
-            $password = $validatedData['password'];
-
+            $email = $request->input('email');
+            $password = $request->input('password');
             $user = User::where('email', $email)->first();
 
-            if (!$user) {
+            if (!$user || !Hash::check($password, $user->password) && $user->user_role != 'appuser') {
                 return response()->json(['success' => false, 'message' => 'Invalid credentials'], 401);
             }
 
-            if ($user && Hash::check($password, $user->password) && $user->user_role == "appuser") {
-                $token = $user->createToken('api-token')->plainTextToken;
-                return response()->json(['success' => true, 'message' => 'Login successful!', 'token' => $token, 'company' => $user->company, 'modules' => $user->modules, 'user_details' => $user], 200);
-            } else {
-                return response()->json(['success' => false, 'message' => 'Invalid credentials'], 401);
-            }
+            // Generate a personal access token for the user
+            $token = $user->createToken('api-token')->plainTextToken;
+
+            return response()->json(['success' => true, 'message' => 'Login successful!', 'token' => $token, 'company' => $user->company, 'modules' => $user->modules, 'user_details' => $user], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
         }
@@ -279,21 +273,21 @@ class ApiController extends Controller
     {
         if ($type == 'blogs') {
             $media = Media::with('category:category_id,category_name')->where('media_type', $type)->where('media_status', 1)->get();
-            foreach ($media as $value) {
+            foreach($media as $value) {
                 $value->user_name = user::where('id', $value->added_user_id)->value('name');
                 $value->user_image = asset(user::where('id', $value->added_user_id)->value('user_image'));
                 $value->media_description = json_decode($value->media_description);
             }
         } elseif ($type == 'diseases') {
             $media = Media::with('category:category_id,category_name')->where('media_type', $type)->where('media_status', 1)->get();
-            foreach ($media as $value) {
+            foreach($media as $value) {
                 $value->user_name = user::where('id', $value->added_user_id)->value('name');
                 $value->user_image =  asset(user::where('id', $value->added_user_id)->value('user_image'));
                 $value->media_description = json_decode($value->media_description);
             }
         } elseif ($type == 'consultancy') {
             $media = Media::with('category:category_id,category_name')->where('media_type', $type)->where('media_status', 1)->get();
-            foreach ($media as $value) {
+            foreach($media as $value) {
                 $value->user_name = user::where('id', $value->added_user_id)->value('name');
                 $value->user_image =  asset(user::where('id', $value->added_user_id)->value('user_image'));
                 $value->media_description = json_decode($value->media_description);
@@ -378,7 +372,7 @@ class ApiController extends Controller
                         break;
                     case 'monthly':
                         $query->whereMonth('created_at', now()->month)
-                            ->whereYear('created_at', now()->year);
+                              ->whereYear('created_at', now()->year);
                         break;
                 }
             }
@@ -395,6 +389,7 @@ class ApiController extends Controller
             }
 
             return response()->json(['success' => true, 'data' => $marketHistory], 200);
+
         } catch (\Exception $e) {
             $this->errorResponse($e);
         }
