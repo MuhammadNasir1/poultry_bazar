@@ -225,7 +225,7 @@ class EcomProductsController extends Controller
             }
             $product->ecom_product_count = $product->ecom_product_count + 1;
             $product->save();
-            return response()->json(['success' => true, 'message' => 'Product boosted successfully'], 200);
+            return response()->json(['success' => true, 'message' => 'Product view  counted'], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
