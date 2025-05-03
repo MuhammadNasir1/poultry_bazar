@@ -24,6 +24,7 @@ return new class extends Migration
             $table->longText('ecom_product_media')->nullable();
             $table->boolean('ecom_product_boosted')->default(false);
             $table->integer('ecom_product_status')->default(1);
+            $table->integer('ecom_product_count')->default(0);
             $table->timestamps();
         });
     }

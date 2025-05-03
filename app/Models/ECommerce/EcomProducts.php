@@ -21,6 +21,7 @@ class EcomProducts extends Model
         'ecom_product_media',
         'ecom_product_boosted',
         'ecom_product_status',
+        'ecom_product_count',
     ];
 
     public $timestamp = true;

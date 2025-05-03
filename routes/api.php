@@ -109,6 +109,7 @@ Route::get('/getFAQs', [ApiController::class, 'getFAQs']);
 
 // get ecommerce products
 Route::get('/getEcomProduct', [EcomProductsController::class, 'getEcomProduct']);
+Route::post('/AddEcomViews/{product_id}', [EcomProductsController::class, 'AddEcomViews']);
 
 
 Route::post('/sendOtpMail', [UserController::class, 'sendOtpMail']);

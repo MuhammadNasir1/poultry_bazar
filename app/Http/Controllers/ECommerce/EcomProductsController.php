@@ -215,4 +215,19 @@ class EcomProductsController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
+
+    public function AddEcomViews($product_id)
+    {
+        try {
+            $product = EcomProducts::find($product_id);
+            if (!$product) {
+                return response()->json(['success' => false, 'message' => 'Product not found'], 200);
+            }
+            $product->ecom_product_count = $product->ecom_product_count + 1;
+            $product->save();
+            return response()->json(['success' => true, 'message' => 'Product boosted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
 }
