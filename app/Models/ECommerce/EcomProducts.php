@@ -22,6 +22,7 @@ class EcomProducts extends Model
         'ecom_product_boosted',
         'ecom_product_status',
         'ecom_product_count',
+        'product_whatsapp_count',
     ];
 
     public $timestamp = true;
