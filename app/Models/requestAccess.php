@@ -12,7 +12,7 @@ class requestAccess extends Model
         'user_id',
         'user_name',
         'user_email',
-        'user_phone',
+    'user_phone',
         'access_module',
         'access_status',
     ];
