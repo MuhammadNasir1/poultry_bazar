@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Mail\ForgotPasswordMail;
 use App\Mail\otpMail;
+use App\Models\requestAccess;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 
@@ -456,6 +458,34 @@ class UserController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Password updated successfully'], 200);
             return response()->json(['success' => true, 'message' => "Password Reset"], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function insertAccessRequest(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $validatedData = $request->validate([
+                'access_module' => 'required|array',
+                'access_module.*' => 'integer',
+            ]);
+
+
+            $moduleIds = implode(',', $validatedData['access_module']);
+
+            $access = requestAccess::create([
+                'user_name' => $user->name,
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'user_phone' => $user->user_phone,
+                'access_module' => $moduleIds,
+                'access_status' => 0,
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Module access added successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }

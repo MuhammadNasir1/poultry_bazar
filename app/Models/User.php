@@ -64,10 +64,20 @@ class User extends Authenticatable
     //     return Module::whereIn('module_id', explode(',', $this->attributes['module_id']))->get();
     // }
     
+    // public function getModulesAttribute()
+    // {
+    //     return Module::whereIn('module_id', explode(',', $this->attributes['module_id']))->get();
+    // }
+
     public function getModulesAttribute()
-    {
-        return Module::whereIn('module_id', explode(',', $this->attributes['module_id']))->get();
-    }
+{
+    $subscribedIds = explode(',', $this->attributes['module_id']);
+
+    return Module::all()->map(function ($module) use ($subscribedIds) {
+        $module->subscribed = in_array($module->module_id, $subscribedIds);
+        return $module;
+    });
+}
 
     public function getCompanyAttribute()
     {

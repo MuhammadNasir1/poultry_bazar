@@ -20,6 +20,7 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
+    Route::post('/createAccessRequest', [UserController::class, 'insertAccessRequest']);
     Route::post('/addQuery', [ApiController::class, 'addQuery']);
 
     Route::get('/getUser', [ApiController::class, 'getUser']);
