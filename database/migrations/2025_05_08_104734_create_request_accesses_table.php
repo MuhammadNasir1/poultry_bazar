@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("user_id");
             $table->string("user_name");
             $table->string("user_email");
-            $table->string("user_phone");
+            $table->string("user_phone")->nullable();
             $table->string("access_module");
             $table->integer("access_status")->default(0);
             $table->timestamps();   

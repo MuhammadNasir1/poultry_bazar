@@ -69,12 +69,31 @@ class User extends Authenticatable
     //     return Module::whereIn('module_id', explode(',', $this->attributes['module_id']))->get();
     // }
 
-    public function getModulesAttribute()
+//     public function getModulesAttribute()
+// {
+//     $subscribedIds = explode(',', $this->attributes['module_id']);
+
+//     return Module::all()->map(function ($module) use ($subscribedIds) {
+//         $module->subscribed = in_array($module->module_id, $subscribedIds);
+//         return $module;
+//     });
+// }
+
+public function getModulesAttribute()
 {
+    $userId = $this->id; // Assuming 'id' is the user's primary key
     $subscribedIds = explode(',', $this->attributes['module_id']);
 
-    return Module::all()->map(function ($module) use ($subscribedIds) {
+    return Module::all()->map(function ($module) use ($subscribedIds, $userId) {
         $module->subscribed = in_array($module->module_id, $subscribedIds);
+
+        // Fetch access_status from request_accesses table
+        $access = requestAccess::where('user_id', $userId)
+                               ->where('access_module', $module->module_id)
+                               ->first();
+
+        $module->access_status = $access ? $access->access_status : null;
+
         return $module;
     });
 }
