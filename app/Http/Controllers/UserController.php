@@ -479,7 +479,7 @@ class UserController extends Controller
                 'user_name' => $user->name,
                 'user_id' => $user->id,
                 'user_email' => $user->email,
-                'user_phone' => $user->user_phone,
+                'user_phone' => $user->user_phone ?? null,
                 'access_module' => $moduleIds,
                 'access_status' => 0,
             ]);
