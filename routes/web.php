@@ -76,6 +76,9 @@ Route::middleware(['custom_auth'])->group(function () {
     // pos
     Route::get('/pos/users', [UserController::class, 'posUsers']);
     Route::get('/pos/shops', [CompanyController::class, 'shops']);
+
+    Route::get('/accessRequest', [UserController::class, 'accessRequest']);
+    Route::post('/changeAccessRequest', [UserController::class, 'changeAccessRequest']);
 });
 Route::post('/register', [UserController::class, 'RequestForService']);
 Route::get('/login', [ModuleController::class, 'loginData']);

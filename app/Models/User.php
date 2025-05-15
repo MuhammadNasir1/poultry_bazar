@@ -84,7 +84,7 @@ public function getModulesAttribute()
     $userId = $this->id; // Assuming 'id' is the user's primary key
     $subscribedIds = explode(',', $this->attributes['module_id']);
 
-    return Module::all()->map(function ($module) use ($subscribedIds, $userId) {
+    return Module::where('module_status' , 1)->get()->map(function ($module) use ($subscribedIds, $userId) {
         $module->subscribed = in_array($module->module_id, $subscribedIds);
 
         // Fetch access_status from request_accesses table
@@ -105,7 +105,6 @@ public function getModulesAttribute()
 
 
     public function city()
-    {
         return $this->belongsTo(City::class, 'city_id');
     }
 }

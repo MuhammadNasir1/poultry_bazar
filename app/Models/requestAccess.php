@@ -17,4 +17,10 @@ class requestAccess extends Model
         'access_status',
     ];
     public $timestamps = true;
+
+
+    public function module()
+    {
+        return $this->belongsTo(Module::class, 'access_module');
+    }
 }

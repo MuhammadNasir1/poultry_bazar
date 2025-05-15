@@ -17,6 +17,7 @@ use App\Models\requestAccess;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 
 class UserController extends Controller
 {
@@ -484,9 +485,58 @@ class UserController extends Controller
                 'access_status' => 0,
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Module access added successfully', 'data' => $access], 200);
+            return response()->json(['success' => true, 'message' => 'Your request has been sent. Please wait for approval. It takes 1 to 2 working days', 'data' => $access], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function accessRequest()
+    {
+        $access_requests = requestAccess::with(['module:module_id,module_name'])->orderBy('created_at', 'desc')->get();
+        // return response()->json($access_requests);
+        return view("accessRequest", compact("access_requests"));
+    }
+
+    public function changeAccessRequest(Request $request)
+    {
+
+        try {
+
+            $validatedData = $request->validate([
+                'user_id' => 'required',
+                'module_id' => 'integer|required',
+                'access_id' => 'integer|required',
+            ]);
+
+            $user = User::find($validatedData['user_id']);
+            $access_request = User::findOrFail($validatedData['access_id']);
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User not found'], 404);
+            }
+
+
+            // Convert existing module_ids to array
+            $existingModules = $user->module_id ? explode(',', $user->module_id) : [];
+
+            // Add new module_id if it doesn't exist
+            if (!in_array($validatedData['module_id'], $existingModules)) {
+                $existingModules[] = $validatedData['module_id'];
+            }
+
+            // Sort and re-join the array to store it as a string again
+            sort($existingModules); // Optional, for cleaner storage
+            $user->module_id = implode(',', $existingModules);
+            $user->save();
+
+            
+            $access_request->requestAccess = 1;
+            $access_request->updata();
+
+
+            return response()->json(['success' => true, 'message' => 'Access status change successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(["success" => false, "message" => $e->getMessage()],   500);
         }
     }
 }

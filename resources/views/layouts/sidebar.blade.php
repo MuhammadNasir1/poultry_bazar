@@ -89,6 +89,22 @@
             </li>
             @if ($userRole === 'superadmin')
                 <li class="relative z-20">
+                    <a href="../accessRequest"
+                        class="flex items-center py-2 px-4 text-gray-900 rounded-full transition duration-200 hover:text-white dark:text-white hover:bg-customOrangeDark dark:hover:bg-gray-700 group {{ request()->is('accessRequest') ? 'active gradient-bg text-white' : '' }}">
+                        <svg class="w-6 h-6 text-black transition duration-75 dark:text-gray-400 group-hover:text-white {{ request()->is('accessRequest') ? 'text-white' : '' }}"
+                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                            viewBox="0 0 22 21">
+                            <rect x="12.75" y="3" width="1.875" height="4.375" rx="0.9375" />
+                            <rect x="15.25" y="3" width="3.125" height="4.375" rx="1" />
+                            <rect x="3" y="3" width="8.75" height="4.375" rx="1" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M18 9.625C18 9.07272 17.5523 8.625 17 8.625H4C3.44772 8.625 3 9.07272 3 9.625V17C3 17.5523 3.44772 18 4 18H17C17.5523 18 18 17.5523 18 17V9.625ZM16.7501 14.25C16.7501 13.9048 16.4702 13.625 16.1251 13.625C15.7799 13.625 15.5001 13.9048 15.5001 14.25V16.125C15.5001 16.4702 15.7799 16.75 16.1251 16.75C16.4702 16.75 16.7501 16.4702 16.7501 16.125V14.25ZM14.2501 11.125C14.2501 10.7798 13.9702 10.5 13.6251 10.5C13.2799 10.5 13.0001 10.7798 13.0001 11.125V16.125C13.0001 16.4702 13.2799 16.75 13.6251 16.75C13.9702 16.75 14.2501 16.4702 14.2501 16.125V11.125ZM5.16645 15.8336C5.75228 16.4194 6.54656 16.749 7.37506 16.75C8.20386 16.75 8.99872 16.4208 9.58477 15.8347C10.1708 15.2487 10.5001 14.4538 10.5001 13.625C10.5001 12.7962 10.1708 12.0013 9.58477 11.4153C9.14727 10.9778 8.59341 10.6834 7.99592 10.5623C7.65763 10.4937 7.37506 10.7798 7.37506 11.125C7.37506 11.4702 7.66238 11.7403 7.98856 11.8532C8.13899 11.9053 8.28297 11.9766 8.41676 12.066C8.7251 12.272 8.96542 12.5649 9.10734 12.9075C9.24925 13.2501 9.28638 13.6271 9.21403 13.9908C9.14169 14.3545 8.96311 14.6886 8.70089 14.9508C8.43866 15.213 8.10457 15.3916 7.74086 15.464C7.37714 15.5363 7.00014 15.4992 6.65753 15.3573C6.31492 15.2154 6.02208 14.975 5.81606 14.6667C5.72659 14.5328 5.65525 14.3887 5.60315 14.2381C5.49034 13.9121 5.22041 13.625 4.87544 13.625C4.53017 13.625 4.24412 13.9079 4.31309 14.2462C4.43478 14.8431 4.72925 15.3964 5.16645 15.8336Z" />
+                        </svg>
+                        <span class="ms-3">Access Request</span>
+                    </a>
+                </li>
+
+                <li class="relative z-20">
                     <a href="../modules"
                         class="flex items-center py-2 px-4  text-gray-900 rounded-full transition duration-200 hover:text-white dark:text-white hover:bg-customOrangeDark dark:hover:bg-gray-700 group {{ request()->is('modules') ? 'active gradient-bg text-white ' : '' }} ">
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -104,11 +120,11 @@
                     <a href="../admins"
                         class="flex items-center py-2 px-4  text-gray-900 rounded-full transition duration-200 hover:text-white dark:text-white hover:bg-customOrangeDark dark:hover:bg-gray-700 group {{ request()->is('admins') ? 'active gradient-bg text-white ' : '' }} ">
                         <svg xmlns="http://www.w3.org/2000/svg"
-                        class="w-5 h-5 text-black transition duration-75 dark:text-gray-400 group-hover:text-white {{ request()->is('admins') ? 'text-white' : '' }}"
-                        viewBox="0 0 448 512" fill="currentColor">
-                        <path
-                            d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" />
-                    </svg>
+                            class="w-5 h-5 text-black transition duration-75 dark:text-gray-400 group-hover:text-white {{ request()->is('admins') ? 'text-white' : '' }}"
+                            viewBox="0 0 448 512" fill="currentColor">
+                            <path
+                                d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464l349.5 0c-8.9-63.3-63.3-112-129-112l-91.4 0c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3z" />
+                        </svg>
                         <span class="ms-3 ">Admins</span>
                     </a>
                 </li>
