@@ -73,7 +73,6 @@
         function changeStatusFun() {
 
             $('.changeStatusBtn').click(function() {
-                console.log('buttonclick')
                 $('#userId').val($(this).attr('userId'));
                 $('#status').val($(this).attr('status')).trigger('change');
 

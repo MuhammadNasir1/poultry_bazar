@@ -497,46 +497,62 @@ class UserController extends Controller
         // return response()->json($access_requests);
         return view("accessRequest", compact("access_requests"));
     }
-
     public function changeAccessRequest(Request $request)
     {
-
         try {
-
             $validatedData = $request->validate([
-                'user_id' => 'required',
-                'module_id' => 'integer|required',
-                'access_id' => 'integer|required',
+                'user_id' => 'required|integer',
+                'module_id' => 'required|integer',
+                'access_id' => 'required|integer',
+                'status' => 'required|in:0,1,2', // 0: pending, 1: approved, 2: cancel
             ]);
 
             $user = User::find($validatedData['user_id']);
-            $access_request = User::findOrFail($validatedData['access_id']);
             if (!$user) {
-                return response()->json(['success' => false, 'message' => 'User not found'], 404);
+                return response()->json(['success' => false, 'message' => 'User not found'], 400);
             }
 
+            $access_request = requestAccess::find($validatedData['access_id']);
+            if (!$access_request) {
+                return response()->json(['success' => false, 'message' => "Request not found"], 400);
+            }
+            $access_request->access_status = (int) $validatedData['status'];
 
-            // Convert existing module_ids to array
+            $access_request->update();
+
+            // Handle user's module_id update
             $existingModules = $user->module_id ? explode(',', $user->module_id) : [];
 
-            // Add new module_id if it doesn't exist
-            if (!in_array($validatedData['module_id'], $existingModules)) {
-                $existingModules[] = $validatedData['module_id'];
+            if ($validatedData['status'] == 1) {
+                // APPROVED: Add module if not already added
+                if (!in_array($validatedData['module_id'], $existingModules)) {
+                    $existingModules[] = $validatedData['module_id'];
+                    sort($existingModules);
+                    $user->module_id = implode(',', $existingModules);
+                    $user->update();
+                }
+            } elseif ($validatedData['status'] == 2) {
+                // CANCELED: Remove module if exists
+                if (in_array($validatedData['module_id'], $existingModules)) {
+                    $existingModules = array_filter($existingModules, function ($mod) use ($validatedData) {
+                        return $mod != $validatedData['module_id'];
+                    });
+                    $user->module_id = implode(',', $existingModules);
+                    $user->update();
+                }
             }
 
-            // Sort and re-join the array to store it as a string again
-            sort($existingModules); // Optional, for cleaner storage
-            $user->module_id = implode(',', $existingModules);
-            $user->save();
-
-            
-            $access_request->requestAccess = 1;
-            $access_request->updata();
-
-
-            return response()->json(['success' => true, 'message' => 'Access status change successfully'], 200);
+            return response()->json([
+                'success' => true,
+                'message' => 'Access status updated successfully',
+                'data' => $user,
+                'access' => $access_request
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(["success" => false, "message" => $e->getMessage()],   500);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }

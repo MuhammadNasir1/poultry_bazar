@@ -99,12 +99,13 @@ public function getModulesAttribute()
 }
 
     public function getCompanyAttribute()
-    {
+    {   
         return Company::find($this->attributes['company_id']);
     }
 
 
     public function city()
+    {
         return $this->belongsTo(City::class, 'city_id');
     }
 }
