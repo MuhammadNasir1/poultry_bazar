@@ -504,7 +504,7 @@ class UserController extends Controller
                 'user_id' => 'required|integer',
                 'module_id' => 'required|integer',
                 'access_id' => 'required|integer',
-                'status' => 'required|in:0,1,2', // 0: pending, 1: approved, 2: cancel
+                'status' => 'required|integer|in:0,1,2', // 0: pending, 1: approved, 2: cancel
             ]);
 
             $user = User::find($validatedData['user_id']);
@@ -516,7 +516,7 @@ class UserController extends Controller
             if (!$access_request) {
                 return response()->json(['success' => false, 'message' => "Request not found"], 400);
             }
-            $access_request->access_status = (int) $validatedData['status'];
+            $access_request->access_status = $validatedData['status'] ;
 
             $access_request->update();
 

@@ -23,14 +23,28 @@
 
 
                         <td class="text-xs">
+                            @php
+                                $status = (int) $data->access_status;
+                                $statusClasses = [
+                                    0 => 'bg-yellow-100 text-yellow-800',
+                                    1 => 'bg-green-100 text-green-800',
+                                    2 => 'bg-red-100 text-red-800',
+                                ];
+                                $statusLabels = [
+                                    0 => 'Pending',
+                                    1 => 'Approved',
+                                    2 => 'Canceled',
+                                ];
+                            @endphp
+
                             <span data-modal-target="status-modal" data-modal-toggle="status-modal"
-                                class="inline-block px-2 py-1 text-xs font-semibold rounded-full cursor-pointer change-status"
+                                class="inline-block px-2 py-1 text-xs font-semibold rounded-full cursor-pointer change-status {{ $statusClasses[$status] }}"
                                 data-id="{{ $data->access_id }}" data-module="{{ $data->access_module }}"
-                                data-user="{{ $data->user_id }}" data-status="{{ $data->access_status }}"
-                                {{ $data->access_status == 1 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                {{ $data->access_status == 1 ? 'Approved' : 'Pending' }}
+                                data-user="{{ $data->user_id }}">
+                                {{ $statusLabels[$status] }}
                             </span>
                         </td>
+
 
                     </tr>
                 @endforeach
@@ -42,19 +56,19 @@
         <x-slot name="title">Change Status</x-slot>
         <x-slot name="modal_width">max-w-xl</x-slot>
         <x-slot name="body">
-            {{-- <form id="postDataForm" url="../changeAccessRequest" method="post"> --}}
-            <form  action="../changeAccessRequest" method="post">
+            <form id="postDataForm" url="../changeAccessRequest" method="post">
+                {{-- <form  action="../changeAccessRequest" method="post"> --}}
                 @csrf
                 <input type="hidden" name="user_id" id="userId">
                 <input type="hidden" name="module_id" id="moduleId">
                 <input type="hidden" name="access_id" id="accessId">
                 <input type="hidden" name="status" id="status">
                 <div>
-                    <x-select name="user_status" id="status" label="Select Status">
+                    <x-select name="status" id="status" label="Select Status">
                         <x-slot name="options">
                             <option disabled selected>Select status</option>
-                            <option value="1">Pending</option>
-                            <option value="0">Approved</option>
+                            <option value="0">Pending</option>
+                            <option value="1">Approved</option>
                             <option value="2">Cancel</option>
                         </x-slot>
 
@@ -76,10 +90,17 @@
             $("#accessId").val($(this).data('id'));
             $("#moduleId").val($(this).data('module'));
             $("#userId").val($(this).data('user'));
-            $("#status").val($(this).data('status'));
 
 
 
+        });
+
+        function updateDatafun() {}
+
+        $(document).on("formSubmissionResponse", function(event, response, Alert, SuccessAlert, WarningAlert) {
+            if (response.success) {
+                $('.modalCloseBtn').click();
+            } else {}
         });
     </script>
 
