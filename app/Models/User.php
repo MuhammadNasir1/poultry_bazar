@@ -63,43 +63,67 @@ class User extends Authenticatable
     // {
     //     return Module::whereIn('module_id', explode(',', $this->attributes['module_id']))->get();
     // }
-    
+
     // public function getModulesAttribute()
     // {
     //     return Module::whereIn('module_id', explode(',', $this->attributes['module_id']))->get();
     // }
 
-//     public function getModulesAttribute()
-// {
-//     $subscribedIds = explode(',', $this->attributes['module_id']);
+    //     public function getModulesAttribute()
+    // {
+    //     $subscribedIds = explode(',', $this->attributes['module_id']);
 
-//     return Module::all()->map(function ($module) use ($subscribedIds) {
-//         $module->subscribed = in_array($module->module_id, $subscribedIds);
-//         return $module;
-//     });
-// }
+    //     return Module::all()->map(function ($module) use ($subscribedIds) {
+    //         $module->subscribed = in_array($module->module_id, $subscribedIds);
+    //         return $module;
+    //     });
+    // }
 
-public function getModulesAttribute()
-{
-    $userId = $this->id; // Assuming 'id' is the user's primary key
-    $subscribedIds = explode(',', $this->attributes['module_id']);
+    // public function getModulesAttribute()
+    // {
+    //     $userId = $this->id; // Assuming 'id' is the user's primary key
+    //     $subscribedIds = explode(',', $this->attributes['module_id']);
 
-    return Module::where('module_status' , 1)->get()->map(function ($module) use ($subscribedIds, $userId) {
-        $module->subscribed = in_array($module->module_id, $subscribedIds);
+    //     return Module::where('module_status' , 1)->get()->map(function ($module) use ($subscribedIds, $userId) {
+    //         $module->subscribed = in_array($module->module_id, $subscribedIds);
 
-        // Fetch access_status from request_accesses table
-        $access = requestAccess::where('user_id', $userId)
-                               ->where('access_module', $module->module_id)
-                               ->first();
+    //         // Fetch access_status from request_accesses table
+    //         $access = requestAccess::where('user_id', $userId)
+    //                                ->where('access_module', $module->module_id)
+    //                                ->first();
 
-        $module->access_status = $access ? $access->access_status : null;
+    //         $module->access_status = $access ? $access->access_status : null;
 
-        return $module;
-    });
-}
+    //         return $module;
+    //     });
+    // }
+
+
+    public function getModulesAttribute()
+    {
+        $userId = $this->id; // Assuming 'id' is the user's primary key
+        $subscribedIds = explode(',', $this->attributes['module_id']);
+
+        return Module::where('module_status', 1)->get()->map(function ($module) use ($subscribedIds, $userId) {
+            $module->subscribed = in_array($module->module_id, $subscribedIds);
+
+            // Fetch access_status from request_accesses table
+            $access = requestAccess::where('user_id', $userId)
+                ->where('access_module', $module->module_id)
+                ->first();
+
+            // If access record exists, use its status
+            // If not, and user is subscribed, set default to 1
+            $module->access_status = $access
+                ? $access->access_status
+                : ($module->subscribed ? 1 : null);
+
+            return $module;
+        });
+    }
 
     public function getCompanyAttribute()
-    {   
+    {
         return Company::find($this->attributes['company_id']);
     }
 
