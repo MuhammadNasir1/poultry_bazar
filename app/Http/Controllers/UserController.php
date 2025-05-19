@@ -533,8 +533,10 @@ class UserController extends Controller
 
     public function accessRequest()
     {
-        $access_requests = requestAccess::with(['module:module_id,module_name'])->orderBy('created_at', 'desc')->get();
-        // return response()->json($access_requests);
+     $access_requests = requestAccess::with(['module:module_id,module_name'])
+    ->orderBy('created_at', 'desc')
+    ->get();
+
         return view("accessRequest", compact("access_requests"));
     }
     public function changeAccessRequest(Request $request)
@@ -544,6 +546,8 @@ class UserController extends Controller
                 'user_id' => 'required|integer',
                 'module_id' => 'required|integer',
                 'access_id' => 'required|integer',
+                'access_start_date' => 'nullable',
+                'access_end_date' => 'nullable',
                 'status' => 'required|integer|in:0,1,2', // 0: pending, 1: approved, 2: cancel
             ]);
 
@@ -557,6 +561,8 @@ class UserController extends Controller
                 return response()->json(['success' => false, 'message' => "Request not found"], 400);
             }
             $access_request->access_status = $validatedData['status'];
+            $access_request->access_start_date = $validatedData['access_start_date'] ?? null;
+            $access_request->access_end_date = $validatedData['access_end_date'] ?? null;
 
             $access_request->update();
 
