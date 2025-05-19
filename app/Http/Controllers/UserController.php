@@ -464,18 +464,51 @@ class UserController extends Controller
         }
     }
 
+    // public function insertAccessRequest(Request $request)
+    // {
+    //     try {
+    //         $user = Auth::user();
+    //         $validatedData = $request->validate([
+    //             'access_module' => 'required|array',
+    //             'access_module.*' => 'integer',
+    //         ]);
+
+
+    //         $moduleIds = implode(',', $validatedData['access_module']);
+
+    //         $access = requestAccess::create([
+    //             'user_name' => $user->name,
+    //             'user_id' => $user->id,
+    //             'user_email' => $user->email,
+    //             'user_phone' => $user->user_phone ?? null,
+    //             'access_module' => $moduleIds,
+    //             'access_status' => 0,
+    //         ]);
+
+    //         return response()->json(['success' => true, 'message' => 'Your request has been sent. Please wait for approval. It takes 1 to 2 working days', 'data' => $access], 200);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+    //     }
+    // }
+
     public function insertAccessRequest(Request $request)
     {
         try {
             $user = Auth::user();
+
             $validatedData = $request->validate([
                 'access_module' => 'required|array',
                 'access_module.*' => 'integer',
             ]);
 
-
             $moduleIds = implode(',', $validatedData['access_module']);
 
+            // Delete any existing request from the same user for the same module(s)
+            requestAccess::where('user_id', $user->id)
+                ->where('access_module', $moduleIds)
+                ->delete();
+
+            // Create a new access request
             $access = requestAccess::create([
                 'user_name' => $user->name,
                 'user_id' => $user->id,
@@ -485,9 +518,16 @@ class UserController extends Controller
                 'access_status' => 0,
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Your request has been sent. Please wait for approval. It takes 1 to 2 working days', 'data' => $access], 200);
+            return response()->json([
+                'success' => true,
+                'message' => 'Your request has been sent. Please wait for approval. It takes 1 to 2 working days',
+                'data' => $access
+            ], 200);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -516,7 +556,7 @@ class UserController extends Controller
             if (!$access_request) {
                 return response()->json(['success' => false, 'message' => "Request not found"], 400);
             }
-            $access_request->access_status = $validatedData['status'] ;
+            $access_request->access_status = $validatedData['status'];
 
             $access_request->update();
 

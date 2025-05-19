@@ -18,8 +18,10 @@ return new class extends Migration
             $table->string("user_email");
             $table->string("user_phone")->nullable();
             $table->string("access_module");
+            $table->date("subscription_start_date")->nullable();
+            $table->date("subscription_end_date")->nullable();
             $table->integer("access_status")->default(0);
-            $table->timestamps();   
+            $table->timestamps();
         });
     }
 

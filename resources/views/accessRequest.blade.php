@@ -7,7 +7,7 @@
             <h1 class="text-3xl font-bold ">Access Requests</h1>
         </div>
         @php
-            $headers = ['Sr.', 'User Name', 'User Email', 'User Phone', 'Access Module', 'Access Status'];
+            $headers = ['Sr.', 'User Name', 'User Email', 'User Phone', 'Access Module' , 'Request Date', 'Access Status'];
 
         @endphp
 
@@ -20,6 +20,8 @@
                         <td class="text-xs">{{ $data->user_email }}</td>
                         <td class="text-xs">{{ $data->user_phone }}</td>
                         <td class="text-xs">{{ $data->module->module_name }}</td>
+                     <td class="text-xs">{{ $data->updated_at->format('M d, Y') }}</td>
+
 
 
                         <td class="text-xs">

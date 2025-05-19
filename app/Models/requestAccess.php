@@ -14,6 +14,8 @@ class requestAccess extends Model
         'user_email',
         'user_phone',
         'access_module',
+        'subscription_start_date',
+        'subscription_end_date',
         'access_status',
     ];
     public $timestamps = true;
