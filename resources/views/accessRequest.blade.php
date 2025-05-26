@@ -34,7 +34,7 @@
                         <td class="text-xs">{{ $data->created_at->format('M d, Y') }}</td>
 
 
-
+                            
                         <td class="text-xs">
                             @php
                                 $status = (int) $data->access_status;
