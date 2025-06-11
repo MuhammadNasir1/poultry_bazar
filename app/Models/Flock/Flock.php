@@ -26,4 +26,9 @@ class Flock extends Model
     ];
 
     public $timestamps = true;
+
+    function site()
+    {
+        return $this->belongsTo(Sites::class , 'flock_site_id' , 'site_id');
+    }
 }

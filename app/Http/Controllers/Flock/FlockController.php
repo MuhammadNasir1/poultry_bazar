@@ -113,13 +113,13 @@ class FlockController extends Controller
         // }
 
         if ($user_role == 'fl_supervisor') {
-            $flocks = Flock::where('flock_supervisor_user_id', $user->id);
+            $flocks = Flock::with(['site:site_id,site_name'])->where('flock_supervisor_user_id', $user->id);
         } elseif ($user_role == 'fl_accountant') {
-            $flocks = Flock::where('flock_accountant_user_id', $user->id);
+            $flocks = Flock::with(['site:site_id,site_name'])->where('flock_accountant_user_id', $user->id);
         } elseif ($user_role == 'fl_assistant') {
-            $flocks = Flock::where('flock_assistant_user_id', $user->id);
+            $flocks = Flock::with(['site:site_id,site_name'])->where('flock_assistant_user_id', $user->id);
         } elseif ($user_role == 'appuser') {
-            $flocks = Flock::where('user_id', $user->id);
+            $flocks = Flock::with(['site:site_id,site_name'])->where('user_id', $user->id);
         } else {
             return response()->json(['success' => false, 'message' => "Invalid user role"], 400);
         }
@@ -203,7 +203,7 @@ class FlockController extends Controller
         // $flock->total_water = 0;
     }
 
-    public function insertMortality(Request $request)
+    public function insertMortality(Request $request , $type)
     {
         try {
             $validatedData = $request->validate([
@@ -260,15 +260,15 @@ class FlockController extends Controller
     {
         $user = Auth::user();
         $user_role = $user->user_role;
-        $flocks = Flock::all();
+        $flocks = Flock::with(['site:site_id,site_name'])->get();
         if ($user_role == 'fl_supervisor') {
-            $flocks = Flock::where('flock_supervisor_user_id', $user->id)->get();
+            $flocks = Flock::with(['site:site_id,site_name'])->where('flock_supervisor_user_id', $user->id)->get();
         } elseif ($user_role == 'fl_accountant') {
-            $flocks = Flock::where('flock_accountant_user_id', $user->id)->get();
+            $flocks = Flock::with(['site:site_id,site_name'])->where('flock_accountant_user_id', $user->id)->get();
         } elseif ($user_role == 'fl_assist  ant') {
-            $flocks = Flock::where('flock_assistant_user_id', $user->id)->get();
+            $flocks = Flock::with(['site:site_id,site_name'])->where('flock_assistant_user_id', $user->id)->get();
         } elseif ($user_role == 'appuser') {
-            $flocks = Flock::where('user_id', $user->id)->get();
+            $flocks = Flock::with(['site:site_id,site_name'])->where('user_id', $user->id)->get();
         }
 
         foreach ($flocks as $flock) {
