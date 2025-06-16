@@ -21,6 +21,7 @@ return new class extends Migration
             $table->double('purchase_rate')->default(0);
             $table->double('purchase_amount')->default(0);
             $table->text('purchase_comments')->nullable();
+            $table->string('Product_unit')->nullable();
             $table->integer('purchase_status')->default(1);
             $table->timestamps();
         });

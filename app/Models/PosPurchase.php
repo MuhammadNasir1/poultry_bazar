@@ -19,6 +19,7 @@ class PosPurchase extends Model
         'purchase_rate',
         'purchase_amount',
         'purchase_comments',
+        'Product_unit',
         'purchase_status',
     ];
 

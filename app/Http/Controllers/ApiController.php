@@ -68,6 +68,7 @@ class ApiController extends Controller
                 'purchase_rate' => 'required|numeric',
                 'purchase_amount' => 'required|numeric',
                 'purchase_comments' => 'nullable|string',
+                'Product_unit' => 'nullable',
             ]);
 
             $validatedData['purchase_date'] = date('Y-m-d', strtotime($validatedData['purchase_date']));
@@ -91,6 +92,7 @@ class ApiController extends Controller
                     'purchase_rate' => $validatedData['purchase_rate'],
                     'purchase_amount' => $validatedData['purchase_amount'],
                     'purchase_comments' => $validatedData['purchase_comments'],
+                    'Product_unit' => $validatedData['Product_unit'],
                 ]);
                 $products = Products::select('product_id', 'product_stock')->where('product_id', $validatedData['product_id'])->first();
 
