@@ -520,7 +520,7 @@ class UserController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Your request has been sent. Please wait for approval. It takes 1 to 2 working days',
+                'message' => 'Your request has been sent. Please wait for approval.',
                 'data' => $access
             ], 200);
         } catch (\Exception $e) {
