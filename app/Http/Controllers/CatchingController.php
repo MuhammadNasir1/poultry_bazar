@@ -63,7 +63,7 @@ class CatchingController extends Controller
 
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Pre catching created successfully', 'data' => $catching], 200);
+            return response()->json(['success' => true, 'message' => 'Pre catching created successfully', 'data' => $request], 200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' => 'Error in creating pre catching', 'error' => $e->getMessage()], 500);
         }

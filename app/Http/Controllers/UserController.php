@@ -380,7 +380,7 @@ class UserController extends Controller
 
     // get  user data for profile and settings
     public function settings()
-    {
+    {   
         $user = User::where('id', session('user_details')['id'])->first();
         // return response()->json($user);
         return view('setting', compact('user'));
