@@ -32,9 +32,10 @@ class CatchingController extends Controller
                 'cat_advance' => 'required',
                 'cat_f_cash_notes' => 'required',
                 'cat_f_receipt' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
-
+                'flock_Name' => 'nullable',
+                'site_Name' => 'nullable',
+                'site_Contact' => 'nullable',
             ]);
-
 
             if ($request->hasFile('cat_f_receipt')) {
 
@@ -63,7 +64,7 @@ class CatchingController extends Controller
 
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Pre catching created successfully', 'data' => $request], 200);
+            return response()->json(['success' => true, 'message' => 'Pre catching created successfully', 'data' => $validatedData], 200);
         } catch (\Exception $e) {
             return response(['success' => false, 'message' => 'Error in creating pre catching', 'error' => $e->getMessage()], 500);
         }
