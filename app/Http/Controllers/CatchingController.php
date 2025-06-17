@@ -34,7 +34,7 @@ class CatchingController extends Controller
                 'cat_f_receipt' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:5048',
                 'flock_Name' => 'nullable',
                 'site_Name' => 'nullable',
-                'site_Contact' => 'nullable',
+                'site_Contact' => 'required',
             ]);
 
             if ($request->hasFile('cat_f_receipt')) {
