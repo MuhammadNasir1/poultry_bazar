@@ -75,24 +75,6 @@ class CatchingController extends Controller
         try {
             // $userId = Auth::user()->id;
             // $drivers = Catching::select('cat_driver_info')->where('user_id', $userId)->get();
-            // $userId = Auth::user()->id;
-
-            // $rawDrivers = DB::table('catching')
-            //     ->select('cat_driver_info')
-            //     ->where('user_id', $userId)
-            //     ->get();
-
-            // // Decode each JSON object and filter duplicates
-            // $drivers = collect($rawDrivers)
-            //     ->map(function ($item) {
-            //         return json_decode($item->cat_driver_info, true);
-            //     })
-            //     ->unique(function ($info) {
-            //         return $info['driver_id'] . '_' . $info['name'] . '_' . $info['contact'];
-            //     })
-            //     ->values(); // reset the index
-
-            // return response()->json(['success' => true, 'data' => $drivers], 200);
             $userId = Auth::user()->id;
 
             $rawDrivers = DB::table('catching')
@@ -100,19 +82,22 @@ class CatchingController extends Controller
                 ->where('user_id', $userId)
                 ->get();
 
-            $drivers = collect($rawDrivers)
+            // Decode each JSON object and filter duplicates
+            // $drivers = collect($rawDrivers)
+            //     ->map(function ($item) {
+            //         return json_decode($item->cat_driver_info, true);
+            //     })
+            //     ->unique(function ($info) {
+            //         return $info['driver_id'] . '_' . $info['name'] . '_' . $info['contact'];
+            //     })
+            //     ->values();
+
+               $drivers = collect($rawDrivers)
                 ->map(function ($item) {
                     return json_decode($item->cat_driver_info, true);
                 })
-                ->filter() // remove any null values (invalid JSON)
-                ->unique(function ($info) {
-                    // Defensive check for missing keys
-                    $driverId = $info['driver_id'] ?? null;
-                    $name = $info['name'] ?? null;
-                    $contact = $info['contact'] ?? null;
-                    return $driverId . '_' . $name . '_' . $contact;
-                })
-                ->values(); // reset the index
+                ->unique('driver_id')
+                ->values();
 
             return response()->json(['success' => true, 'data' => $drivers], 200);
         } catch (\Exception $e) {
