@@ -241,6 +241,7 @@ class ApiController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'address' => 'required|string|max:500',
+                'user_phone' => 'required',
                 'password' => 'required|string|min:8',
             ]);
 
@@ -250,6 +251,7 @@ class ApiController extends Controller
                 'address' => $validatedData['address'],
                 'password' => $validatedData['password'],
                 'user_role' => 'appuser',
+                'user_role' => $validatedData['user_phone'],
                 'module_id' => '2',
                 'user_status' => 1,
             ]);
