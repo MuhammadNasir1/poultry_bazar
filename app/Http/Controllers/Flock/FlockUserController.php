@@ -172,7 +172,7 @@ class FlockUserController extends Controller
                     $user->save();
                 } else {
                     // Create new user
-                    $password = Str::random(8);
+                   $password = collect(range(0, 9))->random(8)->implode('');
                     $user = User::create([
                         'added_user_id' => $userId,
                         'name' => $validatedData['name'],
