@@ -210,8 +210,7 @@ class ApiController extends Controller
             
             if (
                 !$user || 
-                !Hash::check($validatedData['password'], $user->password) || 
-                $user->user_role != 'appuser'
+                !Hash::check($validatedData['password'], $user->password)
             ) {
                 return response()->json(['success' => false, 'message' => 'Invalid credentials'], 401);
             }
