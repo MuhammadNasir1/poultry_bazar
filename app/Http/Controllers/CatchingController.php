@@ -224,7 +224,10 @@ class CatchingController extends Controller
             $gatePass->party_name = $validatedData['party_name'];
             $gatePass->cat_net_weight = $validatedData['cat_net_weight'];
             $gatePass->update();
-            return response()->json(['success' => true, 'message' => 'GatePass added successfully', 'data' => $validatedData], 200);
+            $gatePass->flock_Name = $validatedData['flock_Name'] ?? null;
+            $gatePass->site_Name = $validatedData['site_Name'] ?? null;
+            $gatePass->site_Contact = $validatedData['site_Contact'] ?? null;
+            return response()->json(['success' => true, 'message' => 'GatePass added successfully', 'data' => $gatePass], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false,  'message' => $e->getMessage()], 500);
         }
